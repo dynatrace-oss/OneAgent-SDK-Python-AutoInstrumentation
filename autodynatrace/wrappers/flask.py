@@ -28,16 +28,22 @@ try:
             host = env.get('HTTP_HOST', 'localhost')
             headers = flask.request.headers
             dt_headers = {}
+            dt_correlation_header = None
             for header in headers:
                 dt_headers[header[0]] = header[1]
+                if header[0].lower() == 'x-dynatrace':
+                    dt_correlation_header = header[1]
 
+                    logger.debug(f'Got correlation header: {dt_correlation_header}')
+
+            logger.info(dt_headers)
             wappinfo = sdk.create_web_application_info(host, 'Flask', '/')
 
         except Exception as e:
             logger.debug(f'dynatrace - could not instrument: {e}')
             return wrapped(*argv, **kwargs)
 
-        with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers):
+        with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers, str_tag=dt_correlation_header):
             logger.debug(f'dynatrace - full_dispatch_request_dynatrace')
             return wrapped(*argv, **kwargs)
 
