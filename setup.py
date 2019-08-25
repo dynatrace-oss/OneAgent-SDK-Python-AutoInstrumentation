@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(name='autodynatrace',
-      version='1.0.1',
+      version='1.0.2',
       packages=find_packages(),
-      install_requires=['wrapt>=1.11.2', 'oneagent-sdk>=1.2.1', 'sqlalchemy>=1.3.7'],
+      install_requires=['wrapt>=1.11.2', 'oneagent-sdk>=1.2.1'],
       author='David Lopes',
       author_email='davidribeirolopes@gmail.com',
       description='Auto instrumentation for the OneAgent SDK',
