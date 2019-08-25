@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='autodynatrace',
-      version='1.0',
+      version='1.0.1',
       packages=find_packages(),
       install_requires=['wrapt>=1.11.2', 'oneagent-sdk>=1.2.1', 'sqlalchemy>=1.3.7'],
       author='David Lopes',

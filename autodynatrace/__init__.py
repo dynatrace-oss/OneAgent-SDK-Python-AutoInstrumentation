@@ -1,9 +1,13 @@
 import logging
+import time
 
-from .sdk import init as sdk_init
-from .log import init as log_init
+start = time.time()
 
-sdk_init()
+
+from .log import init as log_init, logger
+from .sdk import sdk
+
 log_init(logging.DEBUG)
 
-from .wrappers import flask, sqlalchemy
+from .wrappers import flask, sqlalchemy, urllib3
+logger.debug(f'autdynatrace initialization took {time.time() - start:.2f}s')
