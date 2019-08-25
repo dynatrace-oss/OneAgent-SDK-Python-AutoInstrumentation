@@ -29,12 +29,15 @@ try:
             url = f'{protocol}://{host}:{port}{path}'
 
             with sdk.trace_outgoing_web_request(url, method, headers=headers) as tracer:
-                logger.debug(f'Tracing urllib3. URL: "{url}"')
+                dynatrace_tag = tracer.outgoing_dynatrace_string_tag
+                instance.headers['x-dynatrace'] = dynatrace_tag
+                logger.debug(f'Tracing urllib3. URL: "{url}", x-dynatrace: {dynatrace_tag}')
                 rv = wrapped(*args, **kwargs)
                 tracer.set_status_code(rv.status)
                 return rv
 
-        except:
+        except Exception as e:
+            logger.debug(f'Could not instrument urllib3: {e}')
             return wrapped(*args, **kwargs)
 
     logger.debug('Instrumenting urllib3')
