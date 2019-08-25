@@ -16,3 +16,5 @@ That is it.
 
 - flask
 - sqlalchemy
+- urllib3
+- custom annotations
