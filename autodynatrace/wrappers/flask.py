@@ -1,5 +1,4 @@
 import wrapt
-import oneagent
 
 from ..log import logger
 from ..sdk import sdk
