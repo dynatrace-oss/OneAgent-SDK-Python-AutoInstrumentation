@@ -1,3 +1,10 @@
 import oneagent
-oneagent.initialize()
-sdk = oneagent.get_sdk()
+
+sdk = None
+
+
+def init():
+    global sdk
+    oneagent.initialize()
+    sdk = oneagent.get_sdk()
+
