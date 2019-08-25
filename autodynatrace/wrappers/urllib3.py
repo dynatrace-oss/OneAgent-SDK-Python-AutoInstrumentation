@@ -30,7 +30,10 @@ try:
 
             with sdk.trace_outgoing_web_request(url, method, headers=headers) as tracer:
                 dynatrace_tag = tracer.outgoing_dynatrace_string_tag
-                instance.headers['x-dynatrace'] = dynatrace_tag
+                headers = kwargs.get('headers')
+                if headers is not None:
+                    headers['x-dynatrace'] = dynatrace_tag
+                    kwargs['headers'] = headers
                 logger.debug(f'Tracing urllib3. URL: "{url}", x-dynatrace: {dynatrace_tag}')
                 rv = wrapped(*args, **kwargs)
                 tracer.set_status_code(rv.status)
