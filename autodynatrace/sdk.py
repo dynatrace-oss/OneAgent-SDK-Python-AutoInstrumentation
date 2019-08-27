@@ -1,6 +1,6 @@
 import oneagent
 
-sdk = None
+sdk: oneagent.SDK = None
 
 
 def init():

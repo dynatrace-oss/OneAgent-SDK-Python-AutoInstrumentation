@@ -15,6 +15,7 @@ That is it.
 ### Technologies supported:
 
 - flask
+- pymongo
 - sqlalchemy
 - urllib3
 - custom annotations
