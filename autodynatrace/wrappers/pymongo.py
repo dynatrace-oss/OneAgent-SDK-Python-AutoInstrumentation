@@ -26,7 +26,7 @@ try:
                 self.tracer.start()
 
             except Exception as e:
-                logger.info(f'Error instrumenting MongoDB: {e}')
+                logger.debug(f'Error instrumenting MongoDB: {e}')
 
         def succeeded(self, event):
             self.end(False)
