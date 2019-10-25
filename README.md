@@ -1,5 +1,7 @@
 ##  Dynatrace OneAgent SDK Auto Instrumentation for Python
 
+[![Downloads](https://pepy.tech/badge/autodynatrace)](https://pepy.tech/project/autodynatrace)
+
 This package will instrument your python code with the OneAgentSDK.
 
 ### Usage
