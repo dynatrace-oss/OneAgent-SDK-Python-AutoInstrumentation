@@ -7,4 +7,3 @@ def init():
     global sdk
     oneagent.initialize()
     sdk = oneagent.get_sdk()
-
