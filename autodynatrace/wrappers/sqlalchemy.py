@@ -49,6 +49,7 @@ try:
             if context is not None and hasattr(context, "dynatrace_tracer"):
                 tracer = context.dynatrace_tracer
                 if tracer is not None:
+                    # TODO Check if I get stats about query
                     tracer.end()
 
         except Exception as e:

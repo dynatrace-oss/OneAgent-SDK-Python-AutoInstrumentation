@@ -44,6 +44,7 @@ try:
                 )
                 rv = wrapped(*args, **kwargs)
                 tracer.set_status_code(rv.status)
+                # TODO - Add Response Headers
                 return rv
 
         except Exception as e:

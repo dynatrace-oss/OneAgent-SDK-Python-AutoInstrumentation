@@ -8,7 +8,7 @@ from .log import init as log_init, logger
 from .sdk import init as sdk_init
 
 sdk_init()
-log_init(logging.INFO)
+log_init(logging.DEBUG)
 
 from .wrappers import flask, sqlalchemy, urllib3, custom, pymongo, celery
 
