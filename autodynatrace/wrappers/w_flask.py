@@ -29,7 +29,7 @@ try:
             method = env.get("REQUEST_METHOD", "GET")
             url = env.get("REQUEST_URI", "/") or request_uri(env)
             host = env.get("SERVER_NAME") or socket.gethostname() or "localhost"
-            dt_headers = flask.request.headers if env.get("DT_CAPTURE_HEADERS", False) else {}
+            dt_headers = dict(flask.request.headers) if env.get("DT_CAPTURE_HEADERS", False) else {}
             wappinfo = sdk.create_web_application_info(host, "Flask", "/")
 
         except Exception as e:
