@@ -2,6 +2,7 @@ import wrapt
 
 from ..log import logger
 from ..sdk import sdk
+import socket
 
 try:
 
@@ -16,6 +17,7 @@ except ImportError:
     pass
 
 try:
+    from wsgiref.util import request_uri
     import flask
 
     @wrapt.patch_function_wrapper("flask", "Flask.full_dispatch_request")
@@ -25,8 +27,8 @@ try:
         try:
             env = flask.request.environ
             method = env.get("REQUEST_METHOD", "GET")
-            url = env.get("REQUEST_URI", "/")
-            host = env.get("HTTP_HOST", "localhost")
+            url = env.get("REQUEST_URI", "/") or request_uri(env)
+            host = env.get("SERVER_NAME") or socket.gethostname() or "localhost"
             headers = flask.request.headers
             dt_headers = {}
             dt_correlation_header = None
