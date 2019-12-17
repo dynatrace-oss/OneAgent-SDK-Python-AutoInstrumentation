@@ -9,7 +9,7 @@ try:
     class DynatraceMongoListener(monitoring.CommandListener):
         def __init__(self):
             self.vendor = "MongoDB"
-            self.tracer = None
+            self._tracer_dict = {}
 
         def started(self, event):
 
@@ -21,26 +21,35 @@ try:
                 channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(host, port))
 
                 db_info = sdk.create_database_info("{}.{}".format(db_name, collection_name), self.vendor, channel)
-                self.tracer = sdk.trace_sql_database_request(db_info, operation)
-                self.tracer.start()
+                tracer = sdk.trace_sql_database_request(db_info, operation)
+                self._tracer_dict[_get_tracer_dict_key(event)] = tracer
+                tracer.start()
 
             except Exception as e:
                 logger.debug("Error instrumenting MongoDB: {}".format(e))
 
         def succeeded(self, event):
-            self.end(False)
+            self.end(False, event)
 
         def failed(self, event):
-            self.end(True, message="{}".format(event.failure))
+            self.end(True, event, message="{}".format(event.failure))
 
-        def end(self, failed, message=""):
-            if self.tracer is not None:
-                if failed:
-                    self.tracer.mark_failed("MongoDB Command", message)
+        def end(self, failed, event, message=""):
+            tracer = self._tracer_dict.get(_get_tracer_dict_key(event))
+            if tracer is not None:
+                if event:
+                    tracer.mark_failed("MongoDB Command", message)
 
-                self.tracer.end()
+                tracer.end()
+                self._tracer_dict.pop(_get_tracer_dict_key(event))
 
     monitoring.register(DynatraceMongoListener())
+
+    def _get_tracer_dict_key(event):
+        if event.connection_id is not None:
+            return event.request_id, event.connection_id
+        return event.request_id
+
     logger.debug("Instrumenting pymongo")
 except ImportError:
     pass
