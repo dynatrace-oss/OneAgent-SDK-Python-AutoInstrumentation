@@ -2,6 +2,7 @@ import oneagent
 
 from ..log import logger
 from ..sdk import sdk
+import socket
 
 try:
     import sqlalchemy
@@ -25,8 +26,13 @@ try:
             db_host = conn.engine.url.host
             db_port = conn.engine.url.port
 
-            channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER)
+            channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER, None)
             if db_host is not None and db_port is not None:
+                try:
+                    socket.inet_pton(socket.AF_INET6, db_host)
+                    db_host = "[{}]".format(db_host)
+                except:
+                    pass
                 channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(db_host, db_port))
 
             db_info = sdk.create_database_info(db_name, db_technology, channel)
