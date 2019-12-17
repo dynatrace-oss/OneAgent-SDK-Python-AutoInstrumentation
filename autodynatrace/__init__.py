@@ -10,7 +10,7 @@ from .sdk import init as sdk_init
 sdk_init()
 log_init(logging.DEBUG)
 
-from .wrappers import flask, sqlalchemy, urllib3, custom, pymongo, celery
+from .wrappers import w_flask, w_sqlalchemy, w_urllib3, w_celery, w_custom, w_pymongo
 
-dynatrace_custom_tracer = custom.dynatrace_custom_tracer
-logger.debug(f"autodynatrace initialization took {time.time() - start:.2f}s")
+dynatrace_custom_tracer = w_custom.dynatrace_custom_tracer
+logger.debug("autodynatrace initialization took {:.2f}s".format(time.time() - start))

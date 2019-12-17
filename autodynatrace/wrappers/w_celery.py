@@ -1,5 +1,3 @@
-from typing import Dict
-
 from ..log import logger
 from ..sdk import sdk
 
@@ -41,7 +39,7 @@ try:
             return tracer_dict.get(task_id, None)
 
     def remove_tracer(task, task_id):
-        tracer_dict: Dict = getattr(task, DT_KEY, None)
+        tracer_dict = getattr(task, DT_KEY, None)
         if tracer_dict is not None:
             tracer_dict.pop(task_id, None)
 
@@ -55,7 +53,7 @@ try:
             logger.debug("Could not obtain task or task_id")
             return
 
-        tracer = sdk.trace_custom_service(f"publish({task_name})", "Celery")
+        tracer = sdk.trace_custom_service("publish({})".format(task_name), "Celery")
         tracer.start()
         add_tracer(task, task_id, tracer)
 
@@ -82,7 +80,7 @@ try:
             logger.debug("Could not obtain task or task_id")
             return
 
-        tracer = sdk.trace_custom_service(f"run({task.name})", "Celery worker")
+        tracer = sdk.trace_custom_service("run({})".format(task.name), "Celery worker")
         tracer.start()
         add_tracer(task, task_id, tracer)
 

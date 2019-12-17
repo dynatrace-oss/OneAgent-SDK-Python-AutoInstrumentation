@@ -13,10 +13,10 @@ try:
 
     @event.listens_for(Engine, "before_cursor_execute", named=True)
     def dynatrace_before_cursor_execute(**kw):
-        logger.debug(f"Injected method")
+        logger.debug("Injected method before_cursor_execute")
 
         try:
-            conn: Connection = kw["conn"]
+            conn = kw["conn"]
             context = kw["context"]
 
             statement = kw.get("statement", "")
@@ -27,9 +27,7 @@ try:
 
             channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER)
             if db_host is not None and db_port is not None:
-                channel = oneagent.sdk.Channel(
-                    oneagent.sdk.ChannelType.TCP_IP, f"{db_host}:{db_port}"
-                )
+                channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(db_host, db_port))
 
             db_info = sdk.create_database_info(db_name, db_technology, channel)
             tracer = sdk.trace_sql_database_request(db_info, statement)
@@ -37,11 +35,11 @@ try:
             context.dynatrace_tracer = tracer
 
         except Exception as e:
-            logger.debug(f"Error instrumenting sqlalchemy: {e}")
+            logger.debug("Error instrumenting sqlalchemy: {}".format(e))
 
     @event.listens_for(Engine, "after_cursor_execute", named=True)
     def dynatrace_after_cursor_execute(**kw):
-        logger.debug(f"Injected method")
+        logger.debug("Injected method after_cursor_execute")
 
         try:
             context = kw["context"]
@@ -53,7 +51,7 @@ try:
                     tracer.end()
 
         except Exception as e:
-            logger.debug(f"Error instrumenting sqlalchemy after_cursor_execute: {e}")
+            logger.debug("Error instrumenting sqlalchemy after_cursor_execute: {}".format(e))
 
 
 except ImportError:

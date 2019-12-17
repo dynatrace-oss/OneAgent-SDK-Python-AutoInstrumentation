@@ -1,9 +1,13 @@
 import oneagent
+import atexit
 
-sdk: oneagent.SDK = None
+sdk = None
 
 
 def init():
     global sdk
     oneagent.initialize()
     sdk = oneagent.get_sdk()
+
+
+atexit.register(oneagent.shutdown)
