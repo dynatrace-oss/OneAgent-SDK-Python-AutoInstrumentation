@@ -13,7 +13,8 @@ setup(
     url="https://github.com/dlopes7/autodynatrace",
     classifiers=[
         "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 2.7" "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 2.7",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
 )
