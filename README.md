@@ -19,6 +19,7 @@ That is it.
 ### Technologies supported:
 
 - celery
+- django
 - flask
 - pymongo
 - sqlalchemy
