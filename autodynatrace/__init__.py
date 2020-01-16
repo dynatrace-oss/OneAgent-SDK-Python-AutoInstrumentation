@@ -17,7 +17,7 @@ from .wrappers.custom import dynatrace_custom_tracer as trace
 _LOCK = threading.Lock()
 _INSTRUMENTED_LIBS = set()
 
-INSTRUMENT_LIBS = {"flask": True, "urllib3": True, "celery": True, "pymongo": True, "sqlalchemy": True}
+INSTRUMENT_LIBS = {"flask": True, "urllib3": True, "celery": True, "pymongo": True, "sqlalchemy": True, "django": True}
 
 
 def instrument_all(**instrument_libs):
