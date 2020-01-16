@@ -60,8 +60,8 @@ def _get_req_tracer(request):
     return getattr(request, "_dynatrace_tracer", None)
 
 
-def _set_req_tracer(request, span):
-    return setattr(request, "_dynatrace_tracer", span)
+def _set_req_tracer(request, tracer):
+    return setattr(request, "_dynatrace_tracer", tracer)
 
 
 def _add_child_tracer(request, tracer):

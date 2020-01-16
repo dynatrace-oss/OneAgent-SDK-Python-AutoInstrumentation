@@ -20,7 +20,7 @@ def instrument():
             else:
                 settings.INSTALLED_APPS.append("autodynatrace.wrappers.django")
 
-        logger.debug("Added autodynatrace to settings.INSTALLED_APPS")
+            logger.debug("Added autodynatrace to settings.INSTALLED_APPS")
         wrapped(*args, **kwargs)
 
 
