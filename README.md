@@ -22,6 +22,7 @@ That is it.
 - django
 - flask
 - pymongo
+- redis
 - sqlalchemy
 - urllib3
 - custom annotations
