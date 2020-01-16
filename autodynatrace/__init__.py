@@ -1,8 +1,9 @@
+import importlib
 import logging
-import time
+import threading
+import sys
 
-start = time.time()
-
+from wrapt.importer import when_imported
 
 from .log import init as log_init, logger
 from .sdk import init as sdk_init
@@ -10,7 +11,74 @@ from .sdk import init as sdk_init
 sdk_init()
 log_init(logging.DEBUG)
 
-from .wrappers import w_flask, w_sqlalchemy, w_urllib3, w_celery, w_custom, w_pymongo
+from .wrappers.custom import dynatrace_custom_tracer as trace
 
-dynatrace_custom_tracer = w_custom.dynatrace_custom_tracer
-logger.debug("autodynatrace initialization took {:.2f}s".format(time.time() - start))
+
+_LOCK = threading.Lock()
+_INSTRUMENTED_LIBS = set()
+
+INSTRUMENT_LIBS = {"flask": True, "urllib3": True, "celery": True, "pymongo": True, "sqlalchemy": True}
+
+
+def instrument_all(**instrument_libs):
+    libs = INSTRUMENT_LIBS.copy()
+    libs.update(instrument_libs)
+    instrument(**libs)
+
+
+def _on_import_wrapper(lib):
+    def on_import(hook):
+
+        path = "autodynatrace.wrappers.{}".format(lib)
+        imported_lib = importlib.import_module(path)
+        imported_lib.instrument()
+
+    return on_import
+
+
+def instrument(**instrument_libs):
+
+    libs = [l for (l, will_instrument) in instrument_libs.items() if will_instrument]
+    for lib in libs:
+
+        if lib in sys.modules:
+            instrument_lib(lib)
+
+        else:
+            when_imported(lib)(_on_import_wrapper(lib))
+            _INSTRUMENTED_LIBS.add(lib)
+
+    patched_libs = get_already_instrumented()
+    logger.info("Instrumented {}/{} libraries ({})".format(len(patched_libs), len(libs), ", ".join(patched_libs)))
+
+
+def instrument_lib(lib):
+    try:
+        logger.debug("Attempting to instrument %s", lib)
+        return _instrument_lib(lib)
+    except Exception:
+        logger.debug("Failed to instrument %s", lib, exc_info=True)
+        return False
+
+
+def _instrument_lib(lib):
+
+    path = "autodynatrace.wrappers.%s" % lib
+    with _LOCK:
+        if lib in _INSTRUMENTED_LIBS and lib:
+            logger.debug("Skipping (already patched): %s", path)
+            return False
+
+        imported_module = importlib.import_module(path)
+        imported_module.instrument()
+
+        _INSTRUMENTED_LIBS.add(lib)
+        return True
+
+
+def get_already_instrumented():
+    with _LOCK:
+        return sorted(_INSTRUMENTED_LIBS)
+
+
+instrument_all()

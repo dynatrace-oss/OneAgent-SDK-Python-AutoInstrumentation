@@ -1,12 +1,11 @@
+import urllib3
 import wrapt
 
-from ..log import logger
-from ..sdk import sdk
+from ...log import logger
+from ...sdk import sdk
 
 
-try:
-    import urllib3
-
+def instrument():
     @wrapt.patch_function_wrapper("urllib3", "HTTPConnectionPool.urlopen")
     def urlopen_dynatrace(wrapped, instance, args, kwargs):
 
@@ -40,8 +39,3 @@ try:
                 raise
 
             return rv
-
-    logger.debug("Instrumenting urllib3")
-
-except ImportError:
-    pass
