@@ -26,18 +26,22 @@ try:
 
         try:
             env = flask.request.environ
+            logger.info(env)
             method = env.get("REQUEST_METHOD", "GET")
-            url = env.get("REQUEST_URI", "/") or request_uri(env)
+            url = env.get("werkzeug.request").url or env.get("REQUEST_URI", "/") or request_uri(env)
             host = env.get("SERVER_NAME") or socket.gethostname() or "localhost"
+            port = env.get("SERVER_PORT", 80)
             dt_headers = dict(flask.request.headers) if env.get("DT_CAPTURE_HEADERS", False) else {}
-            wappinfo = sdk.create_web_application_info(host, "Flask", "/")
+            logger.debug("Host: {}".format(host))
+            wappinfo = sdk.create_web_application_info("{}:{}".format(host, port), "Flask", "/")
 
         except Exception as e:
             logger.debug("dynatrace - could not instrument: {}".format(e))
             return wrapped(*argv, **kwargs)
 
+        logger.debug("Url: {}".format(url))
         with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers):
-            logger.debug("dynatrace - full_dispatch_request_dynatrace")
+            logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(dt_headers))
             return wrapped(*argv, **kwargs)
 
     logger.debug("Instrumenting flask")

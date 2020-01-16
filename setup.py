@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="autodynatrace",
-    version="1.0.10",
+    version="1.0.11",
     packages=find_packages(),
     package_data={"autodynatrace": ["wrappers/*"]},
     install_requires=["wrapt>=1.11.2", "oneagent-sdk>=1.2.1"],
