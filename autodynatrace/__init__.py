@@ -37,9 +37,12 @@ def instrument_all(**instrument_libs):
 def _on_import_wrapper(lib):
     def on_import(hook):
 
-        path = "autodynatrace.wrappers.{}".format(lib)
-        imported_lib = importlib.import_module(path)
-        imported_lib.instrument()
+        path = "autodynatrace.wrappers.%s" % lib
+        try:
+            imported_module = importlib.import_module(path)
+            imported_module.instrument()
+        except Exception:
+            logger.debug("Could not instrument {}".format(lib))
 
     return on_import
 
@@ -74,12 +77,11 @@ def _instrument_lib(lib):
     path = "autodynatrace.wrappers.%s" % lib
     with _LOCK:
         if lib in _INSTRUMENTED_LIBS and lib:
-            logger.debug("Skipping (already patched): %s", path)
+            logger.debug("Skipping (already instrumented): {}".format(path))
             return False
 
         imported_module = importlib.import_module(path)
         imported_module.instrument()
-
         _INSTRUMENTED_LIBS.add(lib)
         return True
 
