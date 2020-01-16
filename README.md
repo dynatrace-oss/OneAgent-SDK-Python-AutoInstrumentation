@@ -10,7 +10,7 @@ This package will instrument your python code with the OneAgentSDK.
 
 `pip install autodynatrace`
 
-Just import it as soon as possible in your code.
+Just import it in your code.
 
 `import autodynatrace`
 
