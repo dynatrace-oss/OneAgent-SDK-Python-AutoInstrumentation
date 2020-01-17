@@ -23,32 +23,35 @@ class DynatraceMiddleware(MiddlewareClass):
             logger.debug("Tracing request {}".format(url))
             host = get_host(request)
             method = request.method
+            headers = getattr(request, "headers", None)
 
             wappinfo = sdk.create_web_application_info(host, "Django", "/")
-            tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=request.headers)
-            tracer.start()
+            tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)
             _set_req_tracer(request, tracer)
+            tracer.start()
 
         except Exception:
-            logger.debug("Error tracing request")
+            logger.debug("Error tracing request", exc_info=True)
 
     def process_view(self, request, view_func, *args, **kwargs):
         name = func_name(view_func)
         logger.debug("Starting view tracer {}".format(name))
         tracer = sdk.trace_custom_service(name, "Django Views")
-        tracer.start()
         _add_child_tracer(request, tracer)
+        tracer.start()
 
     def process_response(self, request, response):
         try:
+
+            # First, end all children
+            for child in _get_child_tracers(request):
+                if child:
+                    child.end()
+
             tracer = _get_req_tracer(request)
             if tracer:
                 tracer.set_status_code(response.status_code)
                 tracer.end()
-
-            for child in _get_child_tracers(request):
-                if child:
-                    child.end()
 
         except Exception:
             logger.debug("Error processing response", exc_info=True)
