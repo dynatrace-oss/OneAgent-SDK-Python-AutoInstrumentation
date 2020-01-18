@@ -27,10 +27,11 @@ def instrument():
 
         with sdk.trace_outgoing_web_request(url, method, headers=headers) as tracer:
             dynatrace_tag = tracer.outgoing_dynatrace_string_tag
-            headers = kwargs.get("headers")
-            if headers is not None:
-                headers["x-dynatrace"] = dynatrace_tag
-                kwargs["headers"] = headers
+
+            headers = kwargs.get("headers", {})
+            headers["x-dynatrace"] = dynatrace_tag
+            kwargs["headers"] = headers
+
             logger.debug('Tracing urllib3. URL: "{}", x-dynatrace: {}'.format(url, dynatrace_tag))
             try:
                 rv = wrapped(*args, **kwargs)
