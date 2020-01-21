@@ -14,7 +14,9 @@ Just import it in your code.
 
 `import autodynatrace`
 
-That is it.
+### Django
+
+For Django, add `autodynatrace.wrappers.django` to `INSTALLED_APPS`
 
 ### Technologies supported:
 
