@@ -18,6 +18,28 @@ Just import it in your code.
 
 For Django, add `"autodynatrace.wrappers.django"` to `INSTALLED_APPS`
 
+### Celery
+
+For Celery, in your tasks files, you need to call `autodynatrace.set_forkable()` after importing autodynatrace, see [this issue](https://github.com/Dynatrace/OneAgent-SDK-for-Python/issues/9) for more info.
+
+```python
+import autodynatrace
+import random
+import time
+from celery import Celery
+
+autodynatrace.set_forkable()
+app = Celery("tasks", broker="pyamqp://guest@localhost//")
+
+
+@app.task
+@autodynatrace.trace
+def add(x, y):
+    time.sleep(random.randint(1, 3))
+    return x + y
+```
+
+
 ### Technologies supported:
 
 - celery
