@@ -1,5 +1,4 @@
 import wrapt
-import oneagent
 
 from ...log import logger
 from ...sdk import sdk
@@ -31,12 +30,12 @@ class TracedCursor(wrapt.ObjectProxy):
         return self._trace_method(self.__wrapped__.callproc, proc, proc, args)
 
     def __enter__(self):
-        self.__wrapped__.__enter__
+        self.__wrapped__.__enter__()
         return self
 
 
 class TracedConnection(wrapt.ObjectProxy):
-    def __init__(self, conn, pin=None, cursor_cls=None):
+    def __init__(self, conn, cursor_cls=None):
 
         if not cursor_cls:
             cursor_cls = TracedCursor
@@ -44,7 +43,7 @@ class TracedConnection(wrapt.ObjectProxy):
         name = _get_vendor(conn)
         self._self_cursor_cls = cursor_cls
 
-    def _trace_method(self, method, name, extra_tags, *args, **kwargs):
+    def _trace_method(self, method, *args, **kwargs):
         logger.info("Tracning Connection {}".format(args))
         return method(*args, **kwargs)
 
