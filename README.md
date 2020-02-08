@@ -49,3 +49,7 @@ def add(x, y):
 - sqlalchemy
 - urllib3
 - custom annotations
+
+### Environment variables
+
+* `AUTODYNATRACE_CAPTURE_HEADERS`: Default: `False`, set to `True` to capture request headers
