@@ -8,8 +8,8 @@ from wrapt.importer import when_imported
 from .log import init as log_init, logger
 from .sdk import init as sdk_init
 
-sdk_init()
 log_init(logging.DEBUG)
+sdk_init()
 
 from .wrappers.custom import dynatrace_custom_tracer as trace
 

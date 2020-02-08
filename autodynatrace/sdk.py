@@ -1,6 +1,8 @@
 import oneagent
 import atexit
 
+from .log import logger
+
 sdk = None
 
 
@@ -11,5 +13,9 @@ def shutdown():
 def init(forkable=False):
     global sdk
     oneagent.initialize(forkable=forkable)
+    state = oneagent.get_sdk().agent_state
+    if state != oneagent.common.AgentState.ACTIVE:
+        logger.warning("Could not initialize the OneAgent SDK, AgentState: {}".format(state))
+
     atexit.register(shutdown)
     sdk = oneagent.get_sdk()
