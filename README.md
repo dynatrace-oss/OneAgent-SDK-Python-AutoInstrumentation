@@ -33,7 +33,6 @@ app = Celery("tasks", broker="pyamqp://guest@localhost//")
 
 
 @app.task
-@autodynatrace.trace
 def add(x, y):
     time.sleep(random.randint(1, 3))
     return x + y
