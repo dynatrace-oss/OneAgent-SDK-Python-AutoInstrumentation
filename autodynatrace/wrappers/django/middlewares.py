@@ -30,7 +30,6 @@ class DynatraceMiddleware(MiddlewareClass):
                 if dt_header is not None:
                     headers = {"x-dynatrace": dt_header}
 
-            logger.debug(headers)
             wappinfo = sdk.create_web_application_info(host, "Django", "/")
             tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)
             _set_req_tracer(request, tracer)
