@@ -29,4 +29,5 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Topic :: System :: Monitoring",
     ],
+    project_urls={"Issue Tracker": "https://github.com/dlopes7/autodynatrace/issues"},
 )
