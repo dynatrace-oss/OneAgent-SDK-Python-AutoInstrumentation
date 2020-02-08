@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="autodynatrace",
-    version="1.0.20",
+    version="1.0.21",
     packages=find_packages(),
     package_data={"autodynatrace": ["wrappers/*"]},
     install_requires=["wrapt>=1.11.2", "oneagent-sdk>=1.2.1", "six>=1.13.0"],
@@ -12,9 +12,21 @@ setup(
     long_description="The autodynatrace package will auto instrument your python apps",
     url="https://github.com/dlopes7/autodynatrace",
     classifiers=[
-        "Programming Language :: Python :: 3.4",
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved",
+        "License :: OSI Approved :: Apache Software License",  # 2.0
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: Implementation :: CPython",
+        # 'Programming Language :: Python :: Implementation :: PyPy',
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: Microsoft :: Windows",
+        "Topic :: System :: Monitoring",
     ],
 )
