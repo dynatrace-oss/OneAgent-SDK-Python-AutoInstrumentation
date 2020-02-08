@@ -13,7 +13,7 @@ def instrument():
         try:
             env = flask.request.environ
             method = env.get("REQUEST_METHOD", "GET")
-            url = env.get("werkzeug.request").url or env.get("REQUEST_URI", "/") or request_uri(env)
+            url = env.get("REQUEST_URI") or env.get("RAW_URI") or env.get("werkzeug.request").url or request_uri(env)
             host = env.get("SERVER_NAME") or socket.gethostname() or "localhost"
             port = env.get("SERVER_PORT", 80)
             dt_headers = dict(flask.request.headers)
