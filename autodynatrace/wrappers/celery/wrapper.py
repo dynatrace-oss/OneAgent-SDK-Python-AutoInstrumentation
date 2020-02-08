@@ -1,16 +1,5 @@
-import celery
-from celery.signals import (
-    before_task_publish,
-    after_task_publish,
-    task_prerun,
-    task_failure,
-    task_success,
-    task_postrun,
-)
+from celery import signals
 from celery import registry
-import wrapt
-
-# import redis
 
 from ...log import logger
 from ...sdk import sdk
@@ -45,7 +34,6 @@ def instrument():
         if tracer_dict is not None:
             tracer_dict.pop(task_id, None)
 
-    @before_task_publish.connect
     def dt_before_task_publish(**kwargs):
         task_name = kwargs.get("sender")
         task = registry.tasks.get(task_name)
@@ -59,8 +47,8 @@ def instrument():
         tracer.start()
         add_tracer(task, task_id, tracer)
 
-    @after_task_publish.connect
     def dt_after_task_publish(**kwargs):
+        logger.debug("Caceta")
         task_name = kwargs.get("sender")
         task = registry.tasks.get(task_name)
         task_id = get_task_id(kwargs)
@@ -74,7 +62,6 @@ def instrument():
             tracer.end()
             remove_tracer(task, task_id)
 
-    @task_prerun.connect
     def dt_task_prerun(*args, **kwargs):
         task = kwargs.get("sender")
         task_id = kwargs.get("task_id")
@@ -86,7 +73,6 @@ def instrument():
         tracer.start()
         add_tracer(task, task_id, tracer)
 
-    @task_postrun.connect
     def dt_task_postrun(*args, **kwargs):
         task = kwargs.get("sender")
         task_id = kwargs.get("task_id")
@@ -99,3 +85,8 @@ def instrument():
         if tracer is not None:
             tracer.end()
             remove_tracer(task, task_id)
+
+    signals.task_prerun.connect(dt_task_prerun, weak=False)
+    signals.task_postrun.connect(dt_task_postrun, weak=False)
+    signals.after_task_publish.connect(dt_after_task_publish, weak=False)
+    signals.before_task_publish.connect(dt_before_task_publish, weak=False)
