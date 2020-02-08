@@ -29,7 +29,7 @@ def dynatrace_execute_command(func, instance, args, kwargs):
         try:
             socket.inet_pton(socket.AF_INET6, host)
             host = "[{}]".format(host)
-        except:
+        except Exception:
             pass
         channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(host, port))
 
