@@ -47,8 +47,7 @@ class TracedConnection(wrapt.ObjectProxy):
         return method(*args, **kwargs)
 
     def cursor(self, *args, **kwargs):
-        cursor = self.__wrapped__.cursor(*args, **kwargs)
-        return self._self_cursor_cls(cursor, None)
+        return self.__wrapped__.cursor(*args, **kwargs)
 
     def commit(self, *args, **kwargs):
         span_name = "commit"
