@@ -40,11 +40,10 @@ class TracedConnection(wrapt.ObjectProxy):
         if not cursor_cls:
             cursor_cls = TracedCursor
         super(TracedConnection, self).__init__(conn)
-        name = _get_vendor(conn)
         self._self_cursor_cls = cursor_cls
 
     def _trace_method(self, method, *args, **kwargs):
-        logger.info("Tracning Connection {}".format(args))
+        logger.info("Tracing Connection {}".format(args))
         return method(*args, **kwargs)
 
     def cursor(self, *args, **kwargs):
