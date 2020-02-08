@@ -4,10 +4,14 @@ import atexit
 sdk = None
 
 
-def init():
+def init(forkable=False):
     global sdk
-    oneagent.initialize()
+    oneagent.initialize(forkable=forkable)
     sdk = oneagent.get_sdk()
 
 
-atexit.register(oneagent.shutdown)
+def shutdown():
+    oneagent.shutdown()
+
+
+atexit.register(shutdown)

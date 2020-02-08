@@ -28,6 +28,11 @@ INSTRUMENT_LIBS = {
 }
 
 
+def set_forkable():
+    sdk.shutdown()
+    sdk.init(forkable=True)
+
+
 def instrument_all(**instrument_libs):
     libs = INSTRUMENT_LIBS.copy()
     libs.update(instrument_libs)
