@@ -33,10 +33,6 @@ def instrument():
             kwargs["headers"] = headers
 
             logger.debug('Tracing urllib3. URL: "{}", x-dynatrace: {}'.format(url, dynatrace_tag))
-            try:
-                rv = wrapped(*args, **kwargs)
-            except Exception as e:
-                tracer.mark_failed_exc()
-                raise
+            rv = wrapped(*args, **kwargs)
 
             return rv
