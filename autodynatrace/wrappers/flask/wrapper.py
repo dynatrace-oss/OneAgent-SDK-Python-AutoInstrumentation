@@ -18,7 +18,7 @@ def instrument():
             app_name = flask.current_app.name
 
             dt_headers = None
-            if env.get("DT_CAPTURE_HEADERS", False):
+            if env.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
                 dt_headers = dict(flask.request.headers)
             wappinfo = sdk.create_web_application_info("{}".format(host), "Flask ({})".format(app_name), "/")
 
