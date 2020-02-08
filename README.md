@@ -16,7 +16,7 @@ Just import it in your code.
 
 ### Django
 
-For Django, add `autodynatrace.wrappers.django` to `INSTALLED_APPS`
+For Django, add `"autodynatrace.wrappers.django"` to `INSTALLED_APPS`
 
 ### Technologies supported:
 
