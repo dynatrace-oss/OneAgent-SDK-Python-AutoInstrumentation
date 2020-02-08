@@ -6,6 +6,7 @@ setup(
     packages=find_packages(),
     package_data={"autodynatrace": ["wrappers/*"]},
     install_requires=["wrapt>=1.11.2", "oneagent-sdk>=1.2.1", "six>=1.13.0"],
+    python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*",
     author="David Lopes",
     author_email="david.lopes@dynatrace.com",
     description="Auto instrumentation for the OneAgent SDK",
