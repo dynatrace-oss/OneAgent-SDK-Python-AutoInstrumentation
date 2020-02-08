@@ -49,7 +49,7 @@ def instrument_conn(conn):
             try:
                 socket.inet_pton(socket.AF_INET6, db_host)
                 db_host = "[{}]".format(db_host)
-            except:
+            except Exception:
                 pass
             channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(db_host, db_port))
 
