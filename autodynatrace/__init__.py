@@ -1,6 +1,7 @@
 import importlib
 import logging
 import threading
+import os
 import sys
 
 from wrapt.importer import when_imported
@@ -8,7 +9,8 @@ from wrapt.importer import when_imported
 from .log import init as log_init, logger
 from .sdk import init as sdk_init
 
-log_init(logging.DEBUG)
+log_level_name = os.environ.get("AUTDYNATRACE_LOG_LEVEL", "WARNING")
+log_init(logging.getLevelName(log_level_name))
 sdk_init()
 
 from .wrappers.custom import dynatrace_custom_tracer as trace

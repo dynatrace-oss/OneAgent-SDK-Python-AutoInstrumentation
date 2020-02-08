@@ -53,3 +53,4 @@ def add(x, y):
 ### Environment variables
 
 * `AUTODYNATRACE_CAPTURE_HEADERS`: Default: `False`, set to `True` to capture request headers
+* `AUTDYNATRACE_LOG_LEVEL`: Default `WARNING`
