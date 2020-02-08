@@ -15,8 +15,9 @@ def instrument():
             method = env.get("REQUEST_METHOD", "GET")
             url = env.get("REQUEST_URI") or env.get("RAW_URI") or env.get("werkzeug.request").url or request_uri(env)
             host = env.get("SERVER_NAME") or socket.gethostname() or "localhost"
+            app_name = flask.current_app.name
             dt_headers = dict(flask.request.headers)
-            wappinfo = sdk.create_web_application_info("{}".format(host), "Flask", "/")
+            wappinfo = sdk.create_web_application_info("{}".format(host), "Flask ({})".format(app_name), "/")
 
         except Exception as e:
             logger.debug("dynatrace - could not instrument: {}".format(e))
