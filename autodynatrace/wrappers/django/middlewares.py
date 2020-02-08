@@ -37,7 +37,7 @@ class DynatraceMiddleware(MiddlewareClass):
             tracer.start()
 
         except Exception:
-            logger.debug("Error tracing request", exc_info=True)
+            logger.error("Error tracing request", exc_info=True)
 
     def process_view(self, request, view_func, *args, **kwargs):
         name = func_name(view_func)
