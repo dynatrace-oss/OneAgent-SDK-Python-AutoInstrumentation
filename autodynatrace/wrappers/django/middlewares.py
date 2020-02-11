@@ -1,5 +1,6 @@
 import django
 from django.conf import settings
+import os
 
 try:
     from django.core.urlresolvers import resolve
@@ -28,13 +29,15 @@ class DynatraceMiddleware(MiddlewareClass):
             logger.debug("Tracing request {}".format(url))
             host = get_host(request)
             method = request.method
-            headers = getattr(request, "headers", None)
-            app_name = resolve(request.path).kwargs.get("name", "Django")
 
-            if headers is None:
-                dt_header = request.META.get("HTTP_X_DYNATRACE", None)
-                if dt_header is not None:
-                    headers = {"x-dynatrace": dt_header}
+            app_name = resolve(request.path).kwargs.get("name", "Django")
+            headers = {}
+            dt_header = request.META.get("HTTP_X_DYNATRACE", None)
+            if dt_header is not None:
+                headers = {"x-dynatrace": dt_header}
+
+            if os.environ.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
+                headers.update(getattr(request, "headers", {}))
 
             wappinfo = sdk.create_web_application_info(host, "Django ({})".format(app_name), "/")
             tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)

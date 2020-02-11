@@ -5,6 +5,7 @@ import wrapt
 from ...log import logger
 from ...sdk import sdk
 import socket
+import os
 
 
 def instrument():
@@ -18,14 +19,13 @@ def instrument():
             app_name = flask.current_app.name
 
             dt_headers = None
-            if env.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
+            if os.environ.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
                 dt_headers = dict(flask.request.headers)
             wappinfo = sdk.create_web_application_info("{}".format(host), "Flask ({})".format(app_name), "/")
 
         except Exception as e:
             logger.debug("dynatrace - could not instrument: {}".format(e))
             return wrapped(*args, **kwargs)
-
         with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers):
             logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
             return wrapped(*args, **kwargs)
