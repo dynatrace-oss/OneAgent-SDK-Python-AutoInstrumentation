@@ -47,9 +47,14 @@ def _on_import_wrapper(lib):
         path = "autodynatrace.wrappers.%s" % lib
         try:
             imported_module = importlib.import_module(path)
+            print(dir(imported_module))
+            print(imported_module.__file__)
+            print(imported_module.__name__)
+            print(imported_module.__path__)
+            print(imported_module.__package__)
             imported_module.instrument()
         except Exception:
-            logger.debug("Could not instrument {}".format(lib))
+            logger.debug("Could not instrument {}".format(lib), exc_info=True)
 
     return on_import
 
