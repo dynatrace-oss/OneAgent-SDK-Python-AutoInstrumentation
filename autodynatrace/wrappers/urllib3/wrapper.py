@@ -34,5 +34,8 @@ def instrument():
 
             logger.debug('Tracing urllib3. URL: "{}", x-dynatrace: {}'.format(url, dynatrace_tag))
             rv = wrapped(*args, **kwargs)
-
-            return rv
+            try:
+                tracer.set_status_code(rv.status)
+                tracer.add_response_headers(rv.headers)
+            finally:
+                return rv
