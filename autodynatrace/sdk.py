@@ -14,6 +14,7 @@ def init(forkable=False):
     global sdk
     oneagent.initialize(forkable=forkable)
     state = oneagent.get_sdk().agent_state
+    logger.debug(f"Initialized autodynatrace with AgentState: {state}")
     if state != oneagent.common.AgentState.ACTIVE:
         logger.warning("Could not initialize the OneAgent SDK, AgentState: {}".format(state))
 

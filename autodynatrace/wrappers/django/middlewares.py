@@ -30,7 +30,11 @@ class DynatraceMiddleware(MiddlewareClass):
             host = get_host(request)
             method = request.method
 
-            app_name = resolve(request.path).kwargs.get("name", "Django")
+            try:
+                app_name = resolve(request.path).kwargs.get("name", "Django")
+            except Exception:
+                logger.warning("Could not get app name, using default")
+                app_name = f"Django {request.META.get('SERVER_NAME')}:{request.META.get('SERVER_PORT')}"
             headers = {}
             dt_header = request.META.get("HTTP_X_DYNATRACE", None)
             if dt_header is not None:
