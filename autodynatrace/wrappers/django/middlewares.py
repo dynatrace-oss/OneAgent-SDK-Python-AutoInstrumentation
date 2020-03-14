@@ -43,11 +43,10 @@ class DynatraceMiddleware(MiddlewareClass):
             if os.environ.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
                 headers.update(getattr(request, "headers", {}))
 
-            wappinfo = sdk.create_web_application_info(host, "Django ({})".format(app_name), "/")
-            tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)
-            _set_req_tracer(request, tracer)
-
-            tracer.start()
+            with sdk.create_web_application_info(host, "Django ({})".format(app_name), "/") as wappinfo:
+                tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)
+                _set_req_tracer(request, tracer)
+                tracer.start()
 
         except Exception:
             logger.error("Error tracing request", exc_info=True)

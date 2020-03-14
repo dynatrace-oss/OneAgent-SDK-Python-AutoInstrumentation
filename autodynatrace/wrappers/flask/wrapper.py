@@ -26,6 +26,8 @@ def instrument():
         except Exception as e:
             logger.debug("dynatrace - could not instrument: {}".format(e))
             return wrapped(*args, **kwargs)
-        with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers):
-            logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
-            return wrapped(*args, **kwargs)
+
+        with wappinfo:
+            with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers):
+                logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
+                return wrapped(*args, **kwargs)
