@@ -1,10 +1,21 @@
+import sys
+
 from celery import signals
 from celery import registry
 
 from ...log import logger
-from ...sdk import sdk
+from ...sdk import sdk, shutdown, init
+import oneagent
+
 
 DT_KEY = "__dynatrace_tag"
+
+CELERY_WORKER_PROCESS = sys.argv and sys.argv[0].endswith("celery") and "worker" in sys.argv
+
+if CELERY_WORKER_PROCESS:
+    logger.debug("It looks like we are initializing Celery workers, reinitializing with forkable=True")
+    shutdown()
+    init(forkable=True)
 
 
 def instrument():
@@ -34,21 +45,8 @@ def instrument():
         if tracer_dict is not None:
             tracer_dict.pop(task_id, None)
 
-    def dt_before_task_publish(**kwargs):
-        task_name = kwargs.get("sender")
-        task = registry.tasks.get(task_name)
-        task_id = get_task_id(kwargs)
-
-        if task is None or task_id is None:
-            logger.debug("Could not obtain task or task_id")
-            return
-
-        tracer = sdk.trace_custom_service("publish({})".format(task_name), "Celery")
-        tracer.start()
-        add_tracer(task, task_id, tracer)
-
     def dt_after_task_publish(**kwargs):
-        logger.debug("Caceta")
+        # This is executed on the app side, after a task has been sent to Celery
         task_name = kwargs.get("sender")
         task = registry.tasks.get(task_name)
         task_id = get_task_id(kwargs)
@@ -62,18 +60,56 @@ def instrument():
             tracer.end()
             remove_tracer(task, task_id)
 
+    def dt_before_task_publish(**kwargs):
+        # This is executed on the app side, before a task has been sent to Celery
+        task_name = kwargs.get("sender")
+        task = registry.tasks.get(task_name)
+        task_id = get_task_id(kwargs)
+
+        if task is None or task_id is None:
+            logger.debug("Could not obtain task or task_id")
+            return
+
+        msi_handle = sdk.create_messaging_system_info(
+            "Celery",
+            kwargs.get("routing_key", "celery"),
+            oneagent.common.MessagingDestinationType.QUEUE,
+            oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER),
+        )
+
+        with msi_handle:
+            tracer = sdk.trace_outgoing_message(msi_handle)
+            tracer.start()
+            tag = tracer.outgoing_dynatrace_string_tag
+            logger.debug("Celery - inserting tag {}".format(tag))
+            kwargs["headers"][DT_KEY] = tag
+            add_tracer(task, task_id, tracer)
+
     def dt_task_prerun(*args, **kwargs):
+        # This is executed on the worker, before a task is run
         task = kwargs.get("sender")
         task_id = kwargs.get("task_id")
         if task is None or task_id is None:
             logger.debug("Could not obtain task or task_id")
             return
 
-        tracer = sdk.trace_custom_service("run({})".format(task.name), "Celery worker")
-        tracer.start()
-        add_tracer(task, task_id, tracer)
+        msi_handle = sdk.create_messaging_system_info(
+            "Celery",
+            task.request.delivery_info.get("routing_key", "celery"),
+            oneagent.common.MessagingDestinationType.QUEUE,
+            oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER),
+        )
+
+        with msi_handle:
+            with sdk.trace_incoming_message_receive(msi_handle):
+                tag = getattr(task.request, DT_KEY, "")
+                logger.debug("Celery - received tag: {}".format(tag))
+                tracer = sdk.trace_incoming_message_process(msi_handle, str_tag=tag)
+                tracer.start()
+                add_tracer(task, task_id, tracer)
 
     def dt_task_postrun(*args, **kwargs):
+        # This is executed on the worker, after a task is run
         task = kwargs.get("sender")
         task_id = kwargs.get("task_id")
 

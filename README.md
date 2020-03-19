@@ -30,25 +30,6 @@ For most technologies, just import it in your code.
 
 For Django, add `"autodynatrace.wrappers.django"` to `INSTALLED_APPS`
 
-### Celery
-
-For Celery, in your tasks files, you need to call `autodynatrace.set_forkable()` after importing autodynatrace, see [this issue](https://github.com/Dynatrace/OneAgent-SDK-for-Python/issues/9) for more info.
-
-```python
-import autodynatrace
-import random
-import time
-from celery import Celery
-
-autodynatrace.set_forkable()
-app = Celery("tasks", broker="pyamqp://guest@localhost//")
-
-
-@app.task
-def add(x, y):
-    time.sleep(random.randint(1, 3))
-    return x + y
-```
 ### Confluent Kafka
 
 confluent_kafka is written in C, which means we cannot patch the objects, to use it, just replace the `confluent_kafka.Consumer` and `confluent_kafka.Producer` imports with `autodynatrace.wrappers.confluent_kafka.Producer` and `autodynatrace.wrappers.confluent_kafka.Consumer`
