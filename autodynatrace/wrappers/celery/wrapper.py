@@ -80,7 +80,7 @@ def instrument():
         with msi_handle:
             tracer = sdk.trace_outgoing_message(msi_handle)
             tracer.start()
-            tag = tracer.outgoing_dynatrace_string_tag
+            tag: str = tracer.outgoing_dynatrace_string_tag.decode("utf-8")
             logger.debug("Celery - inserting tag {}".format(tag))
             kwargs["headers"][DT_KEY] = tag
             add_tracer(task, task_id, tracer)
