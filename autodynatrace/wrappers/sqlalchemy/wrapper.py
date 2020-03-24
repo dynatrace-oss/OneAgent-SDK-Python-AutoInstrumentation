@@ -19,6 +19,11 @@ def instrument():
             statement = kw.get("statement", "")
             db_technology = conn.engine.name
             db_name = conn.engine.url.database
+
+            if not db_name:
+                # The connection string might not have a db name
+                db_name = "default"
+
             db_host = conn.engine.url.host
             db_port = conn.engine.url.port
 
