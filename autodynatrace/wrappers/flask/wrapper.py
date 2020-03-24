@@ -19,6 +19,7 @@ def instrument():
             app_name = flask.current_app.name
 
             dt_headers = None
+            dt_header = flask.request.headers.get("X-Dynatrace")
             if os.environ.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
                 dt_headers = dict(flask.request.headers)
             wappinfo = sdk.create_web_application_info("{}".format(host), "Flask ({})".format(app_name), "/")
@@ -27,7 +28,13 @@ def instrument():
             logger.debug("dynatrace - could not instrument: {}".format(e))
             return wrapped(*args, **kwargs)
 
-        with wappinfo:
-            with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers):
-                logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
-                return wrapped(*args, **kwargs)
+        try:
+            with wappinfo:
+                logger.debug("Tracing with header: {}".format(dt_header))
+                with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers, str_tag=dt_header):
+                    logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
+                    return wrapped(*args, **kwargs)
+        except Exception as e:
+            logger.debug("dynatrace - could not create tracer: {}".format(e))
+        finally:
+            return wrapped(*args, **kwargs)

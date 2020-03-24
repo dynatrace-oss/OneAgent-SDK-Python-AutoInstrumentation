@@ -74,7 +74,7 @@ def instrument():
             "Celery",
             kwargs.get("routing_key", "celery"),
             oneagent.common.MessagingDestinationType.QUEUE,
-            oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER),
+            oneagent.sdk.Channel(oneagent.sdk.ChannelType.OTHER, "celery"),
         )
 
         with msi_handle:
