@@ -9,7 +9,7 @@ from wrapt.importer import when_imported
 from .log import init as log_init, logger
 from .sdk import init as sdk_init
 
-log_level_name = os.environ.get("AUTDYNATRACE_LOG_LEVEL", "WARNING")
+log_level_name = os.environ.get("AUTODYNATRACE_LOG_LEVEL", "WARNING")
 log_init(logging.getLevelName(log_level_name))
 sdk_init()
 

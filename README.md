@@ -85,4 +85,4 @@ if __name__ == "__main__":
 ### Environment variables
 
 * `AUTODYNATRACE_CAPTURE_HEADERS`: Default: `False`, set to `True` to capture request headers
-* `AUTDYNATRACE_LOG_LEVEL`: Default `WARNING`
+* `AUTODYNATRACE_LOG_LEVEL`: Default `WARNING`
