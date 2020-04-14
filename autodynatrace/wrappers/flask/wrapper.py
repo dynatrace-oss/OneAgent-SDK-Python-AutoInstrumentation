@@ -36,5 +36,4 @@ def instrument():
                     return wrapped(*args, **kwargs)
         except Exception as e:
             logger.debug("dynatrace - could not create tracer: {}".format(e))
-        finally:
             return wrapped(*args, **kwargs)

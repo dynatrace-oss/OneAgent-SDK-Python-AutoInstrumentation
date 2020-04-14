@@ -74,7 +74,6 @@ try:
                         return message
             except Exception:
                 logger.debug("Could not trace Consumer.poll", exc_info=True)
-            finally:
                 return message
         return message
 
