@@ -10,14 +10,14 @@ class TracedCursor(wrapt.ObjectProxy):
         super(TracedCursor, self).__init__(cursor)
         self.db_info = db_info
         self._self_last_execute_operation = None
-        self.cursor = cursor
+        self._original_cursor = cursor
 
     def _trace_method(self, method, query, *args, **kwargs):
 
         # It could be psycopg2.sql.Composable, but we don't want to import that here
         if not isinstance(query, str):
             try:
-                query = query.as_string(self.cursor)
+                query = query.as_string(self._original_cursor)
             except Exception:
                 pass
         logger.debug("Tracing Database Call '{}' to {}".format(str(query), self.db_info))
