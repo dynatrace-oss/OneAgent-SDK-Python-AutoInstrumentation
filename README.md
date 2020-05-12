@@ -86,3 +86,5 @@ if __name__ == "__main__":
 
 * `AUTODYNATRACE_CAPTURE_HEADERS`: Default: `False`, set to `True` to capture request headers
 * `AUTODYNATRACE_LOG_LEVEL`: Default `WARNING`
+* `AUTODYNATRACE_FORKABLE`: Default `False`, set to `True` to allow OneAgent to run in forked process
+  * https://github.com/Dynatrace/OneAgent-SDK-for-Python#using-the-oneagent-sdk-for-python-with-forked-child-processes-only-available-on-linux
