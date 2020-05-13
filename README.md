@@ -88,3 +88,6 @@ if __name__ == "__main__":
 * `AUTODYNATRACE_LOG_LEVEL`: Default `WARNING`
 * `AUTODYNATRACE_FORKABLE`: Default `False`, set to `True` to allow OneAgent to run in forked process
   * https://github.com/Dynatrace/OneAgent-SDK-for-Python#using-the-oneagent-sdk-for-python-with-forked-child-processes-only-available-on-linux
+* `AUTODYNATRACE_VIRTUAL_HOST`: Overwrite the default Virtual Host for Flaks and Django
+* `AUTODYNATRACE_APPLICATION_ID`: Overwrite the default Application Name for Flask and Django
+* `AUTODYNATRACE_CONTEXT_ROOT`: Overwrite the default Context Root for Flask And Django

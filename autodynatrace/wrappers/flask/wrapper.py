@@ -22,7 +22,12 @@ def instrument():
             dt_header = flask.request.headers.get("X-Dynatrace")
             if os.environ.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
                 dt_headers = dict(flask.request.headers)
-            wappinfo = sdk.create_web_application_info("{}".format(host), "Flask ({})".format(app_name), "/")
+
+            virtual_host = os.environ.get("AUTODYNATRACE_VIRTUAL_HOST", "{}".format(host))
+            app_name = os.environ.get("AUTODYNATRACE_APPLICATION_ID", "Flask ({})".format(app_name))
+            context_root = os.environ.get("AUTODYNATRACE_CONTEXT_ROOT", "/")
+
+            wappinfo = sdk.create_web_application_info(virtual_host, app_name, context_root)
 
         except Exception as e:
             logger.debug("dynatrace - could not instrument: {}".format(e))

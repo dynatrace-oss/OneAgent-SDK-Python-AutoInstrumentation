@@ -43,7 +43,11 @@ class DynatraceMiddleware(MiddlewareClass):
             if os.environ.get("AUTODYNATRACE_CAPTURE_HEADERS", False):
                 headers.update(getattr(request, "headers", {}))
 
-            with sdk.create_web_application_info(host, "Django ({})".format(app_name), "/") as wappinfo:
+            virtual_host = os.environ.get("AUTODYNATRACE_VIRTUAL_HOST", host)
+            app_name = os.environ.get("AUTODYNATRACE_APPLICATION_ID", "Django ({})".format(app_name))
+            context_root = os.environ.get("AUTODYNATRACE_CONTEXT_ROOT", "/")
+
+            with sdk.create_web_application_info(virtual_host, app_name, context_root) as wappinfo:
                 tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)
                 _set_req_tracer(request, tracer)
                 tracer.start()
