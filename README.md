@@ -20,6 +20,7 @@ For most technologies, just import it in your code.
 - confluent_kafka
 - django
 - flask
+- pika (RabbitMQ)
 - pymongo
 - redis
 - sqlalchemy

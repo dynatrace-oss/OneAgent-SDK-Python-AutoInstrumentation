@@ -12,7 +12,7 @@ from .sdk import init as sdk_init
 log_level_name = os.environ.get("AUTODYNATRACE_LOG_LEVEL", "WARNING")
 log_init(logging.getLevelName(log_level_name))
 
-forkable = os.environ.get("AUTODYNATRACE_FORKABLE", "False").strip().lower() in ('true', '1')
+forkable = os.environ.get("AUTODYNATRACE_FORKABLE", "False").strip().lower() in ("true", "1")
 sdk_init(forkable=forkable)
 
 from .wrappers.custom import dynatrace_custom_tracer as trace
@@ -29,6 +29,7 @@ INSTRUMENT_LIBS = {
     "sqlalchemy": True,
     "django": True,
     "redis": True,
+    "pika": True,
 }
 
 
