@@ -77,3 +77,23 @@ def instrument():
     @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.executemany")
     def execute_many_dynatrace(wrapped, instance, args, kwargs):
         return trace_query(wrapped, instance, args, kwargs)
+
+    @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.fetchone")
+    def fetch_one_many_dynatrace(wrapped, instance, args, kwargs):
+        with sdk.trace_custom_service("fetchone", "cx_Oracle"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.fetchmany")
+    def fetch_one_many_dynatrace(wrapped, instance, args, kwargs):
+        with sdk.trace_custom_service("fetchmany", "cx_Oracle"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.fetchall")
+    def fetch_one_many_dynatrace(wrapped, instance, args, kwargs):
+        with sdk.trace_custom_service("fetchall", "cx_Oracle"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.__next__")
+    def fetch_one_many_dynatrace(wrapped, instance, args, kwargs):
+        with sdk.trace_custom_service("fetchone", "cx_Oracle"):
+            return wrapped(*args, **kwargs)
