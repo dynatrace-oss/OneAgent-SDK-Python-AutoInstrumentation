@@ -30,7 +30,6 @@ def instrument():
             try:
                 rpc_state = ret[0]
                 sdk.add_custom_request_attribute("Status code", "{}".format(rpc_state.code))
-                print(rpc_state.code)
                 if rpc_state.code == grpc.StatusCode.OK:
                     tracer.set_status_code(200)
                 else:
