@@ -31,6 +31,7 @@ INSTRUMENT_LIBS = {
     "pika": True,
     "cx_Oracle": True,
     "grpc": True,
+    "ruxit": True,
 }
 
 
