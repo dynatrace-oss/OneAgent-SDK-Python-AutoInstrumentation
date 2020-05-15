@@ -3,6 +3,8 @@ import wrapt
 from ...log import logger
 from ...sdk import sdk
 
+import grpc
+
 
 def instrument():
     def instrument_grpc_callable(wrapped, instance, args, kwargs):
@@ -22,9 +24,19 @@ def instrument():
             logger.debug("Could not instrument grpc call, error: '{}'", e)
             return wrapped(*args, **kwargs)
 
-        with sdk.trace_outgoing_web_request(url, "POST"):
+        with sdk.trace_outgoing_web_request(url, "POST") as tracer:
             logger.debug("Tracing GRPC, url: '{}'".format(url))
-            return wrapped(*args, **kwargs)
+            ret = wrapped(*args, **kwargs)
+            try:
+                rpc_state = ret[0]
+                sdk.add_custom_request_attribute("Status code", "{}".format(rpc_state.code))
+                print(rpc_state.code)
+                if rpc_state.code == grpc.StatusCode.OK:
+                    tracer.set_status_code(200)
+                else:
+                    tracer.set_status_code(500)
+            finally:
+                return ret
 
     @wrapt.patch_function_wrapper("grpc._channel", "_UnaryUnaryMultiCallable._blocking")
     def unary_call_dynatrace(wrapped, instance, args, kwargs):
