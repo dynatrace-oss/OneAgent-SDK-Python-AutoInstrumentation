@@ -18,6 +18,7 @@ For most technologies, just import it in your code.
 
 - celery
 - confluent_kafka
+- cx_Oracle
 - django
 - flask
 - pika (RabbitMQ)
@@ -91,4 +92,4 @@ if __name__ == "__main__":
   * https://github.com/Dynatrace/OneAgent-SDK-for-Python#using-the-oneagent-sdk-for-python-with-forked-child-processes-only-available-on-linux
 * `AUTODYNATRACE_VIRTUAL_HOST`: Overwrite the default Virtual Host for Flaks and Django
 * `AUTODYNATRACE_APPLICATION_ID`: Overwrite the default Application Name for Flask and Django
-* `AUTODYNATRACE_CONTEXT_ROOT`: Overwrite the default Context Root for Flask And Django
+* `AUTODYNATRACE_CONTEXT_ROOT`: Overwrite the default Context Root for Flask and Django

@@ -30,6 +30,7 @@ INSTRUMENT_LIBS = {
     "django": True,
     "redis": True,
     "pika": True,
+    "cx_Oracle": True,
 }
 
 
