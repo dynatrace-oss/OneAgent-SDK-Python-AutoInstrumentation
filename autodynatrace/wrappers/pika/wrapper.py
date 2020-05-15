@@ -6,8 +6,6 @@ from ...sdk import sdk
 
 import oneagent
 
-DT_TAG_KEY = "dtdTraceTagInfo"
-
 
 def instrument():
     @wrapt.patch_function_wrapper("pika.channel", "Channel.basic_publish")
@@ -40,7 +38,7 @@ def instrument():
         with messaging_system:
             with sdk.trace_outgoing_message(messaging_system) as tracer:
                 tag = tracer.outgoing_dynatrace_string_tag.decode("utf-8")
-                kwargs["properties"].headers[DT_TAG_KEY] = tag
+                kwargs["properties"].headers[oneagent.common.DYNATRACE_MESSAGE_PROPERTY_NAME] = tag
                 logger.debug(
                     "autodynatrace - Tracing RabbitMQ host={}, port={}, routing_key={}, tag={}".format(
                         host, port, routing_key, tag
@@ -59,7 +57,7 @@ def instrument():
             exchange = method_frame.exchange
             tag = None
             if header_frame is not None and header_frame.headers is not None:
-                tag = header_frame.headers.get(DT_TAG_KEY, None)
+                tag = header_frame.headers.get(oneagent.common.DYNATRACE_MESSAGE_PROPERTY_NAME, None)
 
         except Exception as e:
             logger.warn("autodynatrace - Could not trace BlockingChannel._on_consumer_message_delivery: {}".format(e))

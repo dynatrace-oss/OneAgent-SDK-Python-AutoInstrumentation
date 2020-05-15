@@ -1,6 +1,5 @@
 import re
 import socket
-import time
 
 import cx_Oracle
 import wrapt
@@ -63,6 +62,14 @@ def instrument():
 
         return wrapped(*args, **kwargs)
 
+    def fetchone_wrapper(wrapped, instance, args, kwargs):
+        if not getattr(instance, "_dt_fetchone_reported", False):
+            with sdk.trace_custom_service("fetchone", "cx_Oracle"):
+                setattr(instance, "_dt_fetchone_reported", True)
+                sdk.add_custom_request_attribute("Note", "Only the first fetch (slowest) is recorded")
+                return wrapped(*args, **kwargs)
+        return wrapped(*args, **kwargs)
+
     @wrapt.patch_function_wrapper("cx_Oracle", "connect")
     def connect_dynatrace(wrapped, instance, args, kwargs):
         return DynatraceConnection(*args, **kwargs)
@@ -81,8 +88,7 @@ def instrument():
 
     @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.fetchone")
     def fetchone_dynatrace(wrapped, instance, args, kwargs):
-        with sdk.trace_custom_service("fetchone", "cx_Oracle"):
-            return wrapped(*args, **kwargs)
+        return fetchone_wrapper(wrapped, instance, args, kwargs)
 
     @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.fetchmany")
     def fetchmany_dynatrace(wrapped, instance, args, kwargs):
@@ -96,5 +102,4 @@ def instrument():
 
     @wrapt.patch_function_wrapper("autodynatrace.wrappers.cx_Oracle.wrapper", "DynatraceCursor.__next__")
     def next_dynatrace(wrapped, instance, args, kwargs):
-        with sdk.trace_custom_service("fetchone", "cx_Oracle"):
-            return wrapped(*args, **kwargs)
+        return fetchone_wrapper(wrapped, instance, args, kwargs)
