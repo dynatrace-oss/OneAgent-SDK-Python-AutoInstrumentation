@@ -17,8 +17,6 @@ sdk_init(forkable=forkable)
 
 from .wrappers.custom import dynatrace_custom_tracer as trace
 
-# TODO - # google.api_core.gapic_v1.wrap_method
-
 _LOCK = threading.Lock()
 _INSTRUMENTED_LIBS = set()
 
@@ -32,6 +30,7 @@ INSTRUMENT_LIBS = {
     "redis": True,
     "pika": True,
     "cx_Oracle": True,
+    "grpc": True,
 }
 
 

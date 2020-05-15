@@ -21,6 +21,7 @@ For most technologies, just import it in your code.
 - cx_Oracle
 - django
 - flask
+- grpc
 - pika (RabbitMQ)
 - pymongo
 - redis
