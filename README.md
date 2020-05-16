@@ -4,7 +4,7 @@
 
 [![Downloads](https://pepy.tech/badge/autodynatrace)](https://pepy.tech/project/autodynatrace)
 
-This package will instrument your python code with the OneAgentSDK.
+This package will instrument your python code with the [OneAgent SDK for Python](https://github.com/Dynatrace/OneAgent-SDK-for-Python).
 
 ### Usage
 
@@ -38,8 +38,7 @@ For Django, add `"autodynatrace.wrappers.django"` to `INSTALLED_APPS`
 
 * `AUTODYNATRACE_CAPTURE_HEADERS`: Default: `False`, set to `True` to capture request headers
 * `AUTODYNATRACE_LOG_LEVEL`: Default `WARNING`
-* `AUTODYNATRACE_FORKABLE`: Default `False`, set to `True` to allow OneAgent to run in forked process
-  * https://github.com/Dynatrace/OneAgent-SDK-for-Python#using-the-oneagent-sdk-for-python-with-forked-child-processes-only-available-on-linux
+* `AUTODYNATRACE_FORKABLE`: Default `False`, set to `True` to [instrument forked processes](https://github.com/Dynatrace/OneAgent-SDK-for-Python#using-the-oneagent-sdk-for-python-with-forked-child-processes-only-available-on-linux)
 * `AUTODYNATRACE_VIRTUAL_HOST`: Overwrite the default Virtual Host for Flaks and Django
 * `AUTODYNATRACE_APPLICATION_ID`: Overwrite the default Application Name for Flask and Django
 * `AUTODYNATRACE_CONTEXT_ROOT`: Overwrite the default Context Root for Flask and Django
