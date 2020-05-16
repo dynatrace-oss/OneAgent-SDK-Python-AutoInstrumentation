@@ -24,7 +24,7 @@ def instrument():
             return wrapped(*args, **kwargs)
 
         with sdk.trace_outgoing_web_request(url, "POST") as tracer:
-            logger.debug("Tracing sendPdu, url: '{}'".format(url))
+            logger.debug("Tracing pysnmp sendPdu, url: '{}'".format(url))
             return wrapped(*args, **kwargs)
 
     @wrapt.patch_function_wrapper("pysnmp.proto.rfc3412", "MsgAndPduDispatcher.receiveMessage")
@@ -75,12 +75,6 @@ def instrument():
             logger.debug("Tracing pysnmp sync.bulkCmd")
             return wrapped(*args, **kwargs)
 
-    @wrapt.patch_function_wrapper("pysnmp.hlapi", "getCmd")
-    def send_pdu_dynatrace(wrapped, instance, args, kwargs):
-        with sdk.trace_custom_service("sync.getCmd", "SNMP"):
-            logger.debug("Tracing pysnmp sync.getCmd")
-            return wrapped(*args, **kwargs)
-
     @wrapt.patch_function_wrapper("pysnmp.entity.engine", "SnmpEngine.__init__")
     def send_pdu_dynatrace(wrapped, instance, args, kwargs):
         with sdk.trace_custom_service("SnmpEngine()", "SNMP"):
@@ -97,4 +91,10 @@ def instrument():
     def send_pdu_dynatrace(wrapped, instance, args, kwargs):
         with sdk.trace_custom_service("makeVarBinds", "SNMP"):
             logger.debug("Tracing pysnmp CommandGeneratorVarBinds.makeVarBinds")
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("pysnmp.hlapi.asyncore.cmdgen", "getCmd")
+    def send_pdu_dynatrace(wrapped, instance, args, kwargs):
+        with sdk.trace_custom_service("cmdgen.getCmd", "SNMP"):
+            logger.debug("Tracing pysnmp cmdgen.getCmd")
             return wrapped(*args, **kwargs)
