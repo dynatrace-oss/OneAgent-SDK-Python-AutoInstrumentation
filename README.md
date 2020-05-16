@@ -26,6 +26,7 @@ For most technologies, just import it in your code.
 - pymongo
 - pysnmp
 - redis
+- ruxit (Dynatrace plugin framework)
 - sqlalchemy
 - urllib3
 - custom annotations
