@@ -33,6 +33,7 @@ INSTRUMENT_LIBS = {
     "grpc": True,
     "ruxit": True,
     "confluent_kafka": True,
+    "pysnmp": True,
 }
 
 
