@@ -19,6 +19,7 @@ from .wrappers.custom import dynatrace_custom_tracer as trace
 
 _LOCK = threading.Lock()
 _INSTRUMENTED_LIBS = set()
+_INSTRUMENT_LIBS_LAZY = set()
 
 INSTRUMENT_LIBS = {
     "flask": True,
@@ -48,6 +49,7 @@ def _on_import_wrapper(lib):
 
         path = "autodynatrace.wrappers.%s" % lib
         try:
+            logger.debug("Instrumenting imported lib '{}'".format(lib))
             imported_module = importlib.import_module(path)
             imported_module.instrument()
         except Exception:
@@ -63,13 +65,19 @@ def instrument(**instrument_libs):
 
         if lib in sys.modules:
             instrument_lib(lib)
+            _INSTRUMENTED_LIBS.add(lib)
 
         else:
             when_imported(lib)(_on_import_wrapper(lib))
-            _INSTRUMENTED_LIBS.add(lib)
+            _INSTRUMENT_LIBS_LAZY.add(lib)
 
     patched_libs = get_already_instrumented()
-    logger.info("Instrumented {}/{} libraries ({})".format(len(patched_libs), len(libs), ", ".join(patched_libs)))
+    lazy_libs = get_will_instrument()
+    logger.info(
+        "Instrumented {}/{} libraries ({}). Will instrument when imported: ({})".format(
+            len(patched_libs), len(libs), ", ".join(patched_libs), ", ".join(lazy_libs)
+        )
+    )
 
 
 def instrument_lib(lib):
@@ -98,6 +106,11 @@ def _instrument_lib(lib):
 def get_already_instrumented():
     with _LOCK:
         return sorted(_INSTRUMENTED_LIBS)
+
+
+def get_will_instrument():
+    with _LOCK:
+        return sorted(_INSTRUMENT_LIBS_LAZY)
 
 
 instrument_all()
