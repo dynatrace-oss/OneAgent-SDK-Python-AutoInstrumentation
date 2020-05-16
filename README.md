@@ -16,20 +16,20 @@ For most technologies, just import it in your code.
 
 ### Technologies supported:
 
-- celery
-- confluent_kafka
-- cx_Oracle
-- django
-- flask
-- grpc
-- pika (RabbitMQ)
-- pymongo
-- pysnmp
-- redis
-- ruxit (Dynatrace plugin framework)
-- sqlalchemy
-- urllib3
-- custom annotations
+- **celery**
+- **confluent_kafka**
+- **cx_Oracle**
+- **django**
+- **flask**
+- **grpc**
+- **pika** (RabbitMQ)
+- **pymongo**
+- **pysnmp**
+- **redis**
+- **ruxit** (Dynatrace plugin framework)
+- **sqlalchemy**
+- **urllib3**
+- **custom annotations**
 
 ### Django
 
