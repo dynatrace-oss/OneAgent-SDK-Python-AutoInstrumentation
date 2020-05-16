@@ -1,2 +1,1 @@
-from .wrapper import Producer
-from .wrapper import Consumer
+from .wrapper import instrument

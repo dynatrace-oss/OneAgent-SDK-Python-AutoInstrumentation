@@ -32,6 +32,7 @@ INSTRUMENT_LIBS = {
     "cx_Oracle": True,
     "grpc": True,
     "ruxit": True,
+    "confluent_kafka": True,
 }
 
 

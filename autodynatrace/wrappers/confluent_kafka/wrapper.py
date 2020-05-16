@@ -5,19 +5,20 @@ from ...sdk import sdk
 from oneagent.common import MessagingDestinationType
 from oneagent.sdk import Channel, ChannelType
 
-from confluent_kafka import Producer as KafkaProducer
-from confluent_kafka import Consumer as KafkaConsumer
+import confluent_kafka
 
 
-class Producer(KafkaProducer):
+class Producer(confluent_kafka.Producer):
     pass
 
 
-class Consumer(KafkaConsumer):
+class Consumer(confluent_kafka.Consumer):
     pass
 
 
-try:
+def instrument():
+    confluent_kafka.Consumer = Consumer
+    confluent_kafka.Producer = Producer
 
     @wrapt.patch_function_wrapper("autodynatrace.wrappers.confluent_kafka.wrapper", "Producer.__init__")
     def custom_producer_init(wrapped, instance, args, kwargs):
@@ -76,7 +77,3 @@ try:
                 logger.debug("Could not trace Consumer.poll", exc_info=True)
                 return message
         return message
-
-
-except Exception:
-    logger.debug("Could not patch confluent_kafka", exc_info=True)
