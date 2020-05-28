@@ -17,6 +17,7 @@ For most technologies, just import it in your code.
 ### Technologies supported:
 
 - **celery**
+- **concurrent.futures**
 - **confluent_kafka**
 - **cx_Oracle**
 - **django**

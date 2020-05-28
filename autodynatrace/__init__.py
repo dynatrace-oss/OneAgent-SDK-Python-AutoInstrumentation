@@ -35,6 +35,7 @@ INSTRUMENT_LIBS = {
     "ruxit": True,
     "confluent_kafka": True,
     "pysnmp": True,
+    "concurrent": True,
 }
 
 
