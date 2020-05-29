@@ -36,6 +36,8 @@ INSTRUMENT_LIBS = {
     "confluent_kafka": True,
     "pysnmp": True,
     "concurrent": True,
+    "urllib": True,
+    "suds": True,
 }
 
 
