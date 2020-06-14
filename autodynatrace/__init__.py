@@ -38,6 +38,7 @@ INSTRUMENT_LIBS = {
     "concurrent": True,
     "urllib": True,
     "suds": True,
+    "subprocess": True,
 }
 
 

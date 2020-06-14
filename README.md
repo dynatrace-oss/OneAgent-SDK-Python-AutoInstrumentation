@@ -29,6 +29,7 @@ For most technologies, just import it in your code.
 - **redis**
 - **ruxit** (Dynatrace plugin framework)
 - **sqlalchemy**
+- **subprocess**
 - **suds**
 - **urllib**
 - **urllib3**
