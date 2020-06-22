@@ -8,7 +8,10 @@ def instrument():
     @wrapt.patch_function_wrapper("concurrent.futures.thread", "_WorkItem.__init__")
     def dynatrace_submit(wrapped, instance, args, kwargs):
         fn = args[1]
-        function_name, module, class_name = (fn.__name__, fn.__module__, fn.__self__.__class__.__name__)
+        if hasattr(fn, "__class__"):
+            function_name, module, class_name = ("__call__", fn.__module__, fn.__class__.__name__)
+        else:
+            function_name, module, class_name = (fn.__name__, fn.__module__, fn.__self__.__class__.__name__)
         if class_name == "module":
             method = "{}.{}".format(module, function_name)
         else:
