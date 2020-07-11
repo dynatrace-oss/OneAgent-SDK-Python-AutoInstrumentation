@@ -10,7 +10,7 @@ def instrument():
         fn = args[1]
         module = getattr(fn, "__module__", "thread")
 
-        if hasattr(fn, "__class__"):
+        if hasattr(fn, "__class__") and getattr(fn.__class__, "__name__", "unknown") != "method":
             function_name = "__call__"
             class_name = getattr(fn.__class__, "__name__", "unknown")
         else:
