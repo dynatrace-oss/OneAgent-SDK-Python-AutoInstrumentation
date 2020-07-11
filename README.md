@@ -23,6 +23,7 @@ For most technologies, just import it in your code.
 - **django**
 - **flask**
 - **grpc**
+- **paramiko**
 - **pika** (RabbitMQ)
 - **pymongo**
 - **pysnmp**

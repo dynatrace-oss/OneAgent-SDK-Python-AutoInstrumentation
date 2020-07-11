@@ -39,6 +39,7 @@ INSTRUMENT_LIBS = {
     "urllib": True,
     "suds": True,
     "subprocess": True,
+    "paramiko": True,
 }
 
 
