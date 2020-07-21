@@ -23,7 +23,7 @@ def instrument():
                 path = kwargs.get("url", None)
 
         protocol = "http" if type(instance) is urllib3.connectionpool.HTTPConnectionPool else "https"
-        url = "{}://{}:{}{}".format(protocol, host, port, path)
+        url = "{}://{}{}{}".format(protocol, host, ":{}".format(port) if str(port) not in ["80", "443"] else "", path)
 
         with sdk.trace_outgoing_web_request(url, method, headers=headers) as tracer:
             dynatrace_tag = tracer.outgoing_dynatrace_string_tag

@@ -3,7 +3,6 @@ import wrapt
 
 from ...log import logger
 from ...sdk import sdk
-import traceback
 
 
 def instrument():
@@ -12,7 +11,9 @@ def instrument():
     def dynatrace_putrequest(wrapped, instance, args, kwargs):
         method, path = args[:2]
         scheme = "https" if isinstance(instance, httplib.HTTPSConnection) else "http"
-        url = "{}://{}:{}{}".format(scheme, instance.host, instance.port, path)
+        url = "{}://{}{}{}".format(
+            scheme, instance.host, ":{}".format(instance.port) if str(instance.port) not in ["80", "443"] else "", path
+        )
         tracer = sdk.trace_outgoing_web_request(url, method)
         tracer.start()
         setattr(instance, "__dynatrace_tracer", tracer)
