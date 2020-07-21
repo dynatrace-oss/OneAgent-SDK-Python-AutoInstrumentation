@@ -10,6 +10,12 @@ This package will instrument your python code with the [OneAgent SDK for Python]
 
 `pip install autodynatrace`
 
+### Instrumentation without code changes
+
+Add the environment variable `AUTOWRAPT_BOOTSTRAP=autodynatrace` to your python processes
+
+### Semi-Auto Instrumentation
+
 For most technologies, just import it in your code.
 
 `import autodynatrace`

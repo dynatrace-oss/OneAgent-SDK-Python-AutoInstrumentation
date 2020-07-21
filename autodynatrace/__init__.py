@@ -43,6 +43,10 @@ INSTRUMENT_LIBS = {
 }
 
 
+def load(_):
+    pass
+
+
 def instrument_all(**instrument_libs):
     libs = INSTRUMENT_LIBS.copy()
     libs.update(instrument_libs)
