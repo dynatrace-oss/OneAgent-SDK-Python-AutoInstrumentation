@@ -13,12 +13,12 @@ import oneagent
 
 class DynatraceConnection(cx_Oracle.Connection):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(DynatraceConnection, self).__init__(*args, **kwargs)
 
 
 class DynatraceCursor(cx_Oracle.Cursor):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(DynatraceCursor, self).__init__(*args, **kwargs)
 
 
 def instrument():
