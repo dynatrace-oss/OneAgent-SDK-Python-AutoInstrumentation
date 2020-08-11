@@ -4,8 +4,6 @@
 
 [![Downloads](https://pepy.tech/badge/autodynatrace)](https://pepy.tech/project/autodynatrace)
 
-## What is autodynatrace
-
 Dynatrace provides a [powerful SDK](https://github.com/Dynatrace/OneAgent-SDK-for-Python) that can be used to achieve code level visibility and transaction tracing for applications written in multiple languages, including python. Autodynatrace is a wrapper around the python SDK, that allows you to instrument python applications with minimal code changes.
 
 
