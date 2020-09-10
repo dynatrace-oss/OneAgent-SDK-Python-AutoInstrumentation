@@ -27,7 +27,6 @@ _INSTRUMENT_LIBS_LAZY = set()
 
 INSTRUMENT_LIBS = {
     "flask": True,
-    "urllib3": True,
     "celery": True,
     "pymongo": True,
     "sqlalchemy": True,
