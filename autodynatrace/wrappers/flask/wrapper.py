@@ -36,9 +36,12 @@ def instrument():
         try:
             with wappinfo:
                 logger.debug("Tracing with header: {}".format(dt_header))
-                with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers, str_tag=dt_header):
+                with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers, str_tag=dt_header) as tracer:
                     logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
-                    return wrapped(*args, **kwargs)
+                    response = wrapped(*args, **kwargs)
+                    tracer.set_status_code(response.status_code)
+                    return response
+
         except Exception as e:
             logger.debug("dynatrace - could not create tracer: {}".format(e))
             return wrapped(*args, **kwargs)

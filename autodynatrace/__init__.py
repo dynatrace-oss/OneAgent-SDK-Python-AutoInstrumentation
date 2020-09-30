@@ -55,7 +55,7 @@ def load(_):
 
 
 def instrument_all():
-    libs = INSTRUMENT_LIBS.copy()
+    libs = INSTRUMENT_LIBS[:]
     instrument(libs)
 
 
