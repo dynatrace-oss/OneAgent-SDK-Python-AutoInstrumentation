@@ -1,22 +1,31 @@
 import functools
-
+import os
 
 from ...log import logger
 from ...sdk import sdk
 
 
-def dynatrace_custom_tracer(function):
-    @functools.wraps(function)
+def generate_service_name(wrapped):
+    if os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_NAME"):
+        return os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_NAME")
+
+    service_name = wrapped.__module__
+    if hasattr(wrapped, "im_class"):
+        service_name = wrapped.im_class.__name__
+    if hasattr(wrapped, "__qualname__") and "." in wrapped.__qualname__:
+        service_name = wrapped.__qualname__.split(".")[0]
+
+    return service_name
+
+
+def dynatrace_custom_tracer(wrapped):
+    @functools.wraps(wrapped)
     def wrapper(*args, **kwargs):
-        function_name = function.__name__
-        module_name = function.__module__
-        if hasattr(function, "im_class"):
-            module_name = function.im_class.__name__
-        if hasattr(function, "__qualname__"):
-            module_name = function.__qualname__.split(".")[0]
-        
-        with sdk.trace_custom_service(function_name, module_name):
-            logger.debug("Custom tracing - {}: {}".format(module_name, function_name))
-            return function(*args, **kwargs)
+        method_name = wrapped.__name__
+        service_name = generate_service_name(wrapped)
+
+        with sdk.trace_custom_service(method_name, service_name):
+            logger.debug("Custom tracing - {}: {}".format(service_name, method_name))
+            return wrapped(*args, **kwargs)
 
     return wrapper
