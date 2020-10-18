@@ -1,11 +1,13 @@
 import functools
-
+import os
 
 from ...log import logger
 from ...sdk import sdk
 
 
 def generate_service_name(function):
+    if os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_NAME"):
+        return os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_NAME")
 
     service_name = function.__module__
     if hasattr(function, "im_class"):

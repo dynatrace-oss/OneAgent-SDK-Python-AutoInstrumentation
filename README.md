@@ -53,4 +53,5 @@ For Django, add `"autodynatrace.wrappers.django"` to `INSTALLED_APPS`
 * `AUTODYNATRACE_VIRTUAL_HOST`: Overwrite the default Virtual Host for Flaks and Django
 * `AUTODYNATRACE_APPLICATION_ID`: Overwrite the default Application Name for Flask and Django
 * `AUTODYNATRACE_CONTEXT_ROOT`: Overwrite the default Context Root for Flask and Django
+* `AUTODYNATRACE_CUSTOM_SERVICE_NAME`: Overwrite the custom service name (used by `@autodynatrace.trace`)
 * `AUTODYNATRACE_INSTRUMENT_<LIB_NAME>`: If set to `False`, Disables the instrumentation for a specific lib, example: `AUTODYNATRACE_INSTRUMENT_CONCURRENT=False`, default is `True`

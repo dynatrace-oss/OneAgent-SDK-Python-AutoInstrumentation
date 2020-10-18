@@ -1,4 +1,5 @@
 import sys
+import os
 
 import autodynatrace
 import autodynatrace.wrappers.custom.wrapper as custom_wrapper
@@ -29,6 +30,9 @@ def test_custom_service_name():
     else:
         assert custom_wrapper.generate_service_name(my_class.static_method) == "MyClass"
         assert custom_wrapper.generate_service_name(MyClass.static_method) == "MyClass"
+
+    os.environ["AUTODYNATRACE_CUSTOM_SERVICE_NAME"] = "CustomServiceName"
+    assert custom_wrapper.generate_service_name(module_function) == "CustomServiceName"
 
 
 def test_custom_service_instrumentation():
