@@ -10,6 +10,10 @@ def module_function():
     return 1
 
 
+def another_function():
+    pass
+
+
 class MyClass:
     def class_method(self):
         pass
@@ -23,6 +27,7 @@ def test_custom_service_name():
     my_class = MyClass()
     assert custom_wrapper.generate_service_name(module_function) == "tests.test_custom"
     assert custom_wrapper.generate_service_name(my_class.class_method) == "MyClass"
+    assert custom_wrapper.generate_service_name(module_function) == custom_wrapper.generate_service_name(another_function)
 
     if sys.version_info[0] == 2:
         assert custom_wrapper.generate_service_name(my_class.static_method) == "tests.test_custom"
