@@ -2,17 +2,12 @@ import django
 from django.conf import settings
 import os
 
-try:
-    from django.core.urlresolvers import resolve
-except ImportError:
-    from django.urls import resolve
-
 
 from ...log import logger
 from ...sdk import sdk
 from ..utils import func_name
 
-from .utils import get_request_uri, get_host
+from .utils import get_request_uri, get_host, get_app_name
 
 try:
     from django.utils.deprecation import MiddlewareMixin
@@ -29,12 +24,8 @@ class DynatraceMiddleware(MiddlewareClass):
             logger.debug("Tracing request {}".format(url))
             host = get_host(request)
             method = request.method
+            app_name = get_app_name(request)
 
-            try:
-                app_name = resolve(request.path).kwargs.get("name", "Django")
-            except Exception:
-                app_name = "{}:{}".format(request.META.get("SERVER_NAME"), request.META.get("SERVER_PORT"))
-                logger.debug("Could not get app name, using default: {}".format(app_name))
             headers = {}
             dt_header = request.META.get("HTTP_X_DYNATRACE", None)
             if dt_header is not None:
@@ -44,11 +35,10 @@ class DynatraceMiddleware(MiddlewareClass):
                 headers.update(getattr(request, "headers", {}))
 
             virtual_host = os.environ.get("AUTODYNATRACE_VIRTUAL_HOST", host)
-            app_name = os.environ.get("AUTODYNATRACE_APPLICATION_ID", "Django ({})".format(app_name))
             context_root = os.environ.get("AUTODYNATRACE_CONTEXT_ROOT", "/")
 
-            with sdk.create_web_application_info(virtual_host, app_name, context_root) as wappinfo:
-                tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=headers)
+            with sdk.create_web_application_info(virtual_host, app_name, context_root) as web_app_info:
+                tracer = sdk.trace_incoming_web_request(web_app_info, url, method, headers=headers)
                 _set_req_tracer(request, tracer)
                 tracer.start()
 

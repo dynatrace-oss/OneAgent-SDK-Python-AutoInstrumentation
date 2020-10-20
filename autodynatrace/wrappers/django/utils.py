@@ -1,5 +1,12 @@
+import os
+
 from ...log import logger
 from six.moves.urllib import parse
+
+try:
+    from django.core.urlresolvers import resolve
+except ImportError:
+    from django.urls import resolve
 
 
 def get_host(request):
@@ -31,3 +38,16 @@ def get_request_uri(request):
     return parse.urlunparse(
         parse.ParseResult(scheme=request.scheme, netloc=host, path=request.path, params="", query="", fragment="",)
     )
+
+
+def get_app_name(request):
+    try:
+        app_name = resolve(request.path).kwargs.get("name")
+        logger.debug("Resolved app_name as '{}' from resolving the path".format(app_name))
+        if app_name is None:
+            app_name = "{}:{}".format(request.META.get("SERVER_NAME"), request.META.get("SERVER_PORT"))
+    except Exception:
+        app_name = "{}:{}".format(request.META.get("SERVER_NAME"), request.META.get("SERVER_PORT"))
+        logger.debug("Could not get app name, using default: {}".format(app_name))
+
+    return os.environ.get("AUTODYNATRACE_APPLICATION_ID", "Django ({})".format(app_name))
