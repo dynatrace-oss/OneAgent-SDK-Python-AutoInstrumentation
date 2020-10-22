@@ -45,7 +45,7 @@ def generate_method_name(wrapped):
     name = wrapped.__name__
     if get_custom_defined_service_name() or use_fully_qualified_name():
         path = get_module_path(wrapped)
-        return path + "." + name
+        return "{}.{}".format(path, name)
     else:
         return name
 
