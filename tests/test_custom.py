@@ -97,9 +97,6 @@ def test_custom_method_name_fqn_true():
     assert custom_wrapper.generate_method_name(my_class.class_method) == "tests.test_custom.MyClass.class_method"
     assert custom_wrapper.generate_method_name(another_function) == "tests.test_custom.another_function"
 
-    assert custom_wrapper.generate_method_name(my_class.static_method) == "tests.test_custom.MyClass.static_method"
-    assert custom_wrapper.generate_method_name(MyClass.static_method) == "tests.test_custom.MyClass.static_method"
-
     os.environ["AUTODYNATRACE_CUSTOM_SERVICE_NAME"] = "CustomServiceName"
     assert custom_wrapper.generate_method_name(module_function) == "tests.test_custom.module_function"
     assert custom_wrapper.generate_method_name(my_class.class_method) == "tests.test_custom.MyClass.class_method"
