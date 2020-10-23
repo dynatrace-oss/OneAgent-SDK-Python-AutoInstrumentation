@@ -22,7 +22,12 @@ def generate_service_name(wrapped):
 
 
 def get_module_path(wrapped):
-    module_path = wrapped.__module__
+    module_path = "unknown"
+    if hasattr(wrapped, "__module__"):
+        module_path = wrapped.__module__
+    elif hasattr(wrapped, "__func__"):
+        return get_module_path(wrapped.__func__)
+
     class_name = None
     qual_name = None
     result = module_path
@@ -42,7 +47,12 @@ def get_module_path(wrapped):
 
 
 def generate_method_name(wrapped):
-    name = wrapped.__name__
+    name = "unknown"
+    if hasattr(wrapped, "__name__"):
+        name = wrapped.__name__
+    elif hasattr(wrapped, "__func__"):
+        return generate_method_name(wrapped.__func__)
+
     if get_custom_defined_service_name() or use_fully_qualified_name():
         path = get_module_path(wrapped)
         return "{}.{}".format(path, name)

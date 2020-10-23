@@ -30,6 +30,7 @@ def test_custom_service_name():
     os.environ.pop("AUTODYNATRACE_CUSTOM_SERVICE_NAME", None)
     assert custom_wrapper.generate_service_name(module_function) == "tests.test_custom"
     assert custom_wrapper.generate_service_name(my_class.class_method) == "MyClass"
+    assert custom_wrapper.generate_service_name(classmethod(my_class.class_method)) == "MyClass"
     assert custom_wrapper.generate_service_name(module_function) == custom_wrapper.generate_service_name(another_function)
 
     if sys.version_info[0] == 2:
@@ -50,6 +51,7 @@ def test_custom_service_name_fqn_true():
     os.environ.pop("AUTODYNATRACE_CUSTOM_SERVICE_NAME", None)
     assert custom_wrapper.generate_service_name(module_function) == "tests.test_custom"
     assert custom_wrapper.generate_service_name(my_class.class_method) == "tests.test_custom.MyClass"
+    assert custom_wrapper.generate_service_name(classmethod(my_class.class_method)) == "tests.test_custom.MyClass"
     assert custom_wrapper.generate_service_name(module_function) == custom_wrapper.generate_service_name(another_function)
 
     if sys.version_info[0] == 2:
@@ -70,6 +72,7 @@ def test_custom_method_name_fqn_false():
     os.environ.pop("AUTODYNATRACE_CUSTOM_SERVICE_NAME", None)
     assert custom_wrapper.generate_method_name(module_function) == "module_function"
     assert custom_wrapper.generate_method_name(my_class.class_method) == "class_method"
+    assert custom_wrapper.generate_method_name(classmethod(my_class.class_method)) == "class_method"
     assert custom_wrapper.generate_method_name(another_function) == "another_function"
 
     assert custom_wrapper.generate_method_name(my_class.static_method) == "static_method"
@@ -78,6 +81,7 @@ def test_custom_method_name_fqn_false():
     os.environ["AUTODYNATRACE_CUSTOM_SERVICE_NAME"] = "CustomServiceName"
     assert custom_wrapper.generate_method_name(module_function) == "tests.test_custom.module_function"
     assert custom_wrapper.generate_method_name(my_class.class_method) == "MyClass.class_method"
+    assert custom_wrapper.generate_method_name(classmethod(my_class.class_method)) == "MyClass.class_method"
     assert custom_wrapper.generate_method_name(another_function) == "tests.test_custom.another_function"
 
     if sys.version_info[0] == 2:
@@ -95,11 +99,13 @@ def test_custom_method_name_fqn_true():
     os.environ.pop("AUTODYNATRACE_CUSTOM_SERVICE_NAME", None)
     assert custom_wrapper.generate_method_name(module_function) == "tests.test_custom.module_function"
     assert custom_wrapper.generate_method_name(my_class.class_method) == "tests.test_custom.MyClass.class_method"
+    assert custom_wrapper.generate_method_name(classmethod(my_class.class_method)) == "tests.test_custom.MyClass.class_method"
     assert custom_wrapper.generate_method_name(another_function) == "tests.test_custom.another_function"
 
     os.environ["AUTODYNATRACE_CUSTOM_SERVICE_NAME"] = "CustomServiceName"
     assert custom_wrapper.generate_method_name(module_function) == "tests.test_custom.module_function"
     assert custom_wrapper.generate_method_name(my_class.class_method) == "tests.test_custom.MyClass.class_method"
+    assert custom_wrapper.generate_method_name(classmethod(my_class.class_method)) == "tests.test_custom.MyClass.class_method"
     assert custom_wrapper.generate_method_name(another_function) == "tests.test_custom.another_function"
 
     if sys.version_info[0] == 2:
