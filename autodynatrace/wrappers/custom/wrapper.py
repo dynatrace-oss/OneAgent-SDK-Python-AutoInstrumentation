@@ -6,15 +6,19 @@ from ...sdk import sdk
 
 
 def use_fully_qualified_name():
-    return os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_USE_FQN") \
-           and os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_USE_FQN").lower() == 'true'
+    return (
+        os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_USE_FQN")
+        and os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_USE_FQN").lower() == "true"
+    )
 
 
 def get_custom_defined_service_name():
     return os.environ.get("AUTODYNATRACE_CUSTOM_SERVICE_NAME")
 
 
-def generate_service_name(wrapped):
+def generate_service_name(wrapped, service=None):
+    if service is not None and isinstance(service, str):
+        return service
     if get_custom_defined_service_name():
         return get_custom_defined_service_name()
     else:
@@ -46,7 +50,9 @@ def get_module_path(wrapped):
     return result
 
 
-def generate_method_name(wrapped):
+def generate_method_name(wrapped, method=None):
+    if method is not None:
+        return method
     name = "unknown"
     if hasattr(wrapped, "__name__"):
         name = wrapped.__name__
@@ -60,14 +66,20 @@ def generate_method_name(wrapped):
         return name
 
 
-def dynatrace_custom_tracer(wrapped):
-    @functools.wraps(wrapped)
-    def wrapper(*args, **kwargs):
-        method_name = generate_method_name(wrapped)
-        service_name = generate_service_name(wrapped)
+def dynatrace_custom_tracer(service=None, method=None):
+    def dynatrace_decorator(wrapped):
+        @functools.wraps(wrapped)
+        def wrapper(*args, **kwargs):
+            service_name = generate_service_name(wrapped, service)
+            method_name = generate_method_name(wrapped, method)
 
-        with sdk.trace_custom_service(method_name, service_name):
-            logger.debug("Custom tracing - {}: {}".format(service_name, method_name))
-            return wrapped(*args, **kwargs)
+            with sdk.trace_custom_service(method_name, service_name):
+                logger.debug("Custom tracing - {}: {}".format(service_name, method_name))
+                return wrapped(*args, **kwargs)
 
-    return wrapper
+        return wrapper
+
+    if callable(service):
+        return dynatrace_decorator(service)
+    else:
+        return dynatrace_decorator

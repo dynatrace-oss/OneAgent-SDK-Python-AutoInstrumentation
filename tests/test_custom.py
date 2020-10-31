@@ -23,6 +23,20 @@ class MyClass:
         pass
 
 
+@autodynatrace.trace("Service")
+def decorated_service_only():
+    return 1
+
+
+@autodynatrace.trace(method="method")
+def decorated_method_only():
+    return 1
+
+
+@autodynatrace.trace("Service", "method")
+def decorated_service_and_method():
+    return 1
+
 def test_custom_service_name():
     my_class = MyClass()
 
@@ -118,3 +132,11 @@ def test_custom_method_name_fqn_true():
 
 def test_custom_service_instrumentation():
     assert module_function() == 1
+    assert decorated_method_only() == 1
+    assert decorated_service_only() == 1
+    assert decorated_service_and_method() == 1
+
+
+def test_decorator_with_arguments():
+    assert custom_wrapper.generate_service_name(module_function, "Service") == "Service"
+    assert custom_wrapper.generate_method_name(module_function, "method") == "method"
