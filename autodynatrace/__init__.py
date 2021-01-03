@@ -43,6 +43,7 @@ INSTRUMENT_LIBS = [
     "suds",
     "subprocess",
     "paramiko",
+    "psycopg2",
 ]
 
 

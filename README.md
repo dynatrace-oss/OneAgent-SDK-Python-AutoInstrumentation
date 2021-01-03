@@ -31,6 +31,7 @@ For most technologies, just import it in your code.
 - **grpc**
 - **paramiko**
 - **pika** (RabbitMQ)
+- **psycopg2**
 - **pymongo**
 - **pysnmp**
 - **redis**
