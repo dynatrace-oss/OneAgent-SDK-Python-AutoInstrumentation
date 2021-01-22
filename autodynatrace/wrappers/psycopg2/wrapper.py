@@ -46,8 +46,8 @@ def instrument():
             kwargs.setdefault("cursor_factory", self._dynatrace_cursor)
             return super(DynatraceConnection, self).cursor(*args, **kwargs)
 
-    psycopg2.extensions.connection = DynatraceConnection
 
     @wrapt.patch_function_wrapper("psycopg2", "connect")
     def dynatrace_connect(wrapped, instance, args, kwargs):
-        return DynatraceConnection(*args, **kwargs)
+        kwargs.setdefault('connection_factory', DynatraceConnection)
+        return wrapped(*args, **kwargs)
