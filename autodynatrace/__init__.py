@@ -44,6 +44,7 @@ INSTRUMENT_LIBS = [
     "subprocess",
     "paramiko",
     "psycopg2",
+    "tornado",
 ]
 
 
