@@ -10,7 +10,7 @@ def instrument():
 
     def dynatrace_putrequest(wrapped, instance, args, kwargs):
         method, path = args[:2]
-        scheme = "https" if isinstance(instance, httplib.HTTPSConnection) else "http"
+        scheme = "https" if "HTTPS" in instance.__class__.__name__ else "http"
         url = "{}://{}{}{}".format(
             scheme, instance.host, ":{}".format(instance.port) if str(instance.port) not in ["80", "443"] else "", path
         )
