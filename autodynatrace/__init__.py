@@ -9,7 +9,7 @@ from wrapt.importer import when_imported
 from .log import init as log_init, logger
 from .sdk import init as sdk_init
 
-__version__ = 1.063
+__version__ = 1.077
 
 os.environ["DT_CUSTOM_PROP"] = "Autodynatrace={}".format(__version__)
 
@@ -45,6 +45,7 @@ INSTRUMENT_LIBS = [
     "paramiko",
     "psycopg2",
     "tornado",
+    "fastapi",
 ]
 
 

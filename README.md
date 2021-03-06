@@ -27,6 +27,7 @@ For most technologies, just import it in your code.
 - **confluent_kafka**
 - **cx_Oracle**
 - **django**
+- **fastapi**
 - **flask**
 - **grpc**
 - **paramiko**
