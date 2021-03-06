@@ -33,15 +33,26 @@ def instrument():
             logger.debug("dynatrace - could not instrument: {}".format(e))
             return wrapped(*args, **kwargs)
 
-        try:
-            with wappinfo:
-                logger.debug("Tracing with header: {}".format(dt_header))
-                with sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers, str_tag=dt_header) as tracer:
-                    logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
-                    response = wrapped(*args, **kwargs)
-                    tracer.set_status_code(response.status_code)
-                    return response
+        with wappinfo:
+            logger.debug("Tracing with header: {}".format(dt_header))
+            tracer = sdk.trace_incoming_web_request(wappinfo, url, method, headers=dt_headers, str_tag=dt_header)
+            tracer.start()
+            logger.debug("dynatrace - full_dispatch_request_dynatrace: {}".format(url))
+            setattr(flask.request, "__dynatrace_tracer", tracer)
+            response = wrapped(*args, **kwargs)
+            tracer.set_status_code(response.status_code)
+            tracer.end()
+            return response
 
-        except Exception as e:
-            logger.debug("dynatrace - could not create tracer: {}".format(e))
-            return wrapped(*args, **kwargs)
+    @wrapt.patch_function_wrapper("flask", "Flask.handle_exception")
+    def handle_exception_dynatrace(wrapped, instance, args, kwargs):
+        tracer = getattr(flask.request, "__dynatrace_tracer", None)
+        if tracer is not None:
+            exception_type = type(args[0]).__name__
+            exception_message = str(args[0])
+
+            logger.debug("Reporting flask exception: {} - {}".format(exception_type, exception_message))
+            tracer.set_status_code(500)
+            tracer.mark_failed(exception_type, exception_message)
+            tracer.end()
+        return wrapped(*args, **kwargs)
