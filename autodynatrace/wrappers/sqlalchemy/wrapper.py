@@ -1,11 +1,14 @@
+import socket
+
 import oneagent
 import sqlalchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlalchemy.engine.base import Connection
+import wrapt
+
 from ...log import logger
 from ...sdk import sdk
-import socket
 
 
 def instrument():
@@ -75,3 +78,33 @@ def instrument():
 
         except Exception as e:
             logger.debug("Error instrumenting sqlalchemy: {}".format(e))
+
+    @wrapt.patch_function_wrapper("sqlalchemy.orm.session", "Session.__init__")
+    def session_init_dynatrace(wrapped, instance, args, kwargs):
+        logger.debug("Tracing sqlalchemy.Session.init")
+        with sdk.trace_custom_service("Session.init", "sqlalchemy"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("sqlalchemy.orm.session", "Session.begin")
+    def session_init_dynatrace(wrapped, instance, args, kwargs):
+        logger.debug("Tracing sqlalchemy.Session.begin")
+        with sdk.trace_custom_service("Session.begin", "sqlalchemy"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("sqlalchemy.orm.session", "Session.connection")
+    def session_init_dynatrace(wrapped, instance, args, kwargs):
+        logger.debug("Tracing sqlalchemy.Session.connection")
+        with sdk.trace_custom_service("Session.connection", "sqlalchemy"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("sqlalchemy.orm.session", "Session.close")
+    def session_init_dynatrace(wrapped, instance, args, kwargs):
+        logger.debug("Tracing sqlalchemy.Session.close")
+        with sdk.trace_custom_service("Session.close", "sqlalchemy"):
+            return wrapped(*args, **kwargs)
+
+    @wrapt.patch_function_wrapper("sqlalchemy.orm.session", "Session.query")
+    def session_init_dynatrace(wrapped, instance, args, kwargs):
+        logger.debug("Tracing sqlalchemy.Session.query")
+        with sdk.trace_custom_service("Session.query", "sqlalchemy"):
+            return wrapped(*args, **kwargs)
