@@ -40,6 +40,7 @@ For most technologies, just import it in your code.
 - **sqlalchemy**
 - **subprocess**
 - **suds**
+- **starlette**
 - **tornado**
 - **urllib**
 - **urllib3**
