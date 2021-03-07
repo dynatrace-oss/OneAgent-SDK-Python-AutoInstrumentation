@@ -36,9 +36,7 @@ class DynatraceASGIMiddleware:
 
         with sdk.create_web_application_info(virtual_host, app_name, context_root) as web_app_info:
             with sdk.trace_incoming_web_request(web_app_info, url, method, headers=headers, str_tag=dt_tag) as tracer:
-                logger.debug(
-                    "dynatrace - asgi - AgentState: {}, Tracing url: '{}' with tag {}".format(sdk.agent_state, url, dt_tag)
-                )
+                logger.debug("dynatrace - asgi - Tracing url: '{}' with tag {}".format(url, dt_tag))
 
                 async def wrapped_send(message):
                     if message.get("type") == "http.response.start" and "status" in message:
