@@ -25,33 +25,40 @@ _LOCK = threading.Lock()
 _INSTRUMENTED_LIBS = set()
 _INSTRUMENT_LIBS_LAZY = set()
 
-INSTRUMENT_LIBS = [
-    "flask",
-    "celery",
-    "pymongo",
-    "sqlalchemy",
-    "django",
-    "redis",
-    "pika",
-    "cx_Oracle",
-    "grpc",
-    "ruxit",
-    "confluent_kafka",
-    "pysnmp",
-    "concurrent",
-    "urllib",
-    "suds",
-    "subprocess",
-    "paramiko",
-    "psycopg2",
-    "tornado",
-    "fastapi",
-    "starlette",
-]
+INSTRUMENT_LIBS = {
+    "flask": True,
+    "celery": True,
+    "pymongo": True,
+    "sqlalchemy": True,
+    "django": True,
+    "redis": True,
+    "pika": True,
+    "cx_Oracle": True,
+    "grpc": True,
+    "ruxit": True,
+    "confluent_kafka": True,
+    "pysnmp": True,
+    "concurrent": False,
+    "urllib": True,
+    "suds": True,
+    "subprocess": True,
+    "paramiko": True,
+    "psycopg2": True,
+    "tornado": True,
+    "fastapi": True,
+    "starlette": True,
+}
 
 
-def will_instrument(lib_name):
-    return os.environ.get("AUTODYNATRACE_INSTRUMENT_{}".format(lib_name.upper()), "True").strip().lower() in ("true", "1")
+def will_instrument(lib_name, default):
+    # Check if the user has chose to forcefully instrument (or not instrument) this lib
+    lib_environment_variable_name = "AUTODYNATRACE_INSTRUMENT_{}".format(lib_name.upper())
+
+    if lib_environment_variable_name not in os.environ:
+        # If the environment variable was not set, return the default instrumentation setting
+        return default
+
+    return os.environ.get(lib_environment_variable_name, "True").strip().lower() in ("true", "1")
 
 
 def load(_):
@@ -59,7 +66,7 @@ def load(_):
 
 
 def instrument_all():
-    libs = INSTRUMENT_LIBS[:]
+    libs = INSTRUMENT_LIBS.copy()
     instrument(libs)
 
 
@@ -79,16 +86,17 @@ def _on_import_wrapper(lib):
 
 def instrument(instrument_libs):
 
-    for lib in instrument_libs:
-        if will_instrument(lib):
+    for lib_name, default in instrument_libs.items():
 
-            if lib in sys.modules:
-                instrument_lib(lib)
-                _INSTRUMENTED_LIBS.add(lib)
+        if will_instrument(lib_name, default):
+
+            if lib_name in sys.modules:
+                instrument_lib(lib_name)
+                _INSTRUMENTED_LIBS.add(lib_name)
 
             else:
-                when_imported(lib)(_on_import_wrapper(lib))
-                _INSTRUMENT_LIBS_LAZY.add(lib)
+                when_imported(lib_name)(_on_import_wrapper(lib_name))
+                _INSTRUMENT_LIBS_LAZY.add(lib_name)
 
     patched_libs = get_already_instrumented()
     lazy_libs = get_will_instrument()
