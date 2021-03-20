@@ -47,6 +47,7 @@ INSTRUMENT_LIBS = {
     "tornado": True,
     "fastapi": True,
     "starlette": True,
+    "aiohttp": True,
 }
 
 
