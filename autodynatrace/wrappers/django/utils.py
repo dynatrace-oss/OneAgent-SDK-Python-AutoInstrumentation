@@ -1,7 +1,8 @@
 import os
 
-from ...log import logger
 from six.moves.urllib import parse
+
+from ...log import logger
 
 try:
     from django.core.urlresolvers import resolve
@@ -12,7 +13,7 @@ except ImportError:
 def get_host(request):
     host = None
     try:
-        host = request.get_host()  # this will include host:port
+        host = str(request.get_host())  # this will include host:port
     except Exception:
         logger.debug("Failed to get Django request host", exc_info=True)
 
@@ -35,8 +36,9 @@ def get_host(request):
 def get_request_uri(request):
 
     host = get_host(request)
+    scheme = request.scheme or ''
     return parse.urlunparse(
-        parse.ParseResult(scheme=request.scheme, netloc=host, path=request.path, params="", query="", fragment="",)
+        parse.ParseResult(scheme=scheme, netloc=host, path=request.path, params="", query="", fragment="")
     )
 
 
