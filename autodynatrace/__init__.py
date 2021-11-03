@@ -9,9 +9,14 @@ from wrapt.importer import when_imported
 from .log import init as log_init, logger
 from .sdk import init as sdk_init
 
-__version__ = 1.078
+__version__ = 1.082
 
-os.environ["DT_CUSTOM_PROP"] = "Autodynatrace={}".format(__version__)
+dt_custom_prop = os.environ.get("DT_CUSTOM_PROP")
+if dt_custom_prop:
+    os.environ["DT_CUSTOM_PROP"] = "{} Autodynatrace={}".format(dt_custom_prop, __version__)
+else:
+    os.environ["DT_CUSTOM_PROP"] = "Autodynatrace={}".format(__version__)
+
 
 log_level_name = os.environ.get("AUTODYNATRACE_LOG_LEVEL", "WARNING")
 log_init(logging.getLevelName(log_level_name))
