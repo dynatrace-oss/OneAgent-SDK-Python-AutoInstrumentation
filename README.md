@@ -1,5 +1,8 @@
 ##  OneAgent-SDK-Python-AutoInstrumentation
 
+> :warning: **Dynatrace is now able to [ingest Opentelemetry traces](https://www.dynatrace.com/support/help/shortlink/opentelemetry-trace), consider using [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python) instead of autodynatrace for wider community support**.
+
+
 [![Actions Status](https://github.com/dynatrace-oss/OneAgent-SDK-Python-AutoInstrumentation/workflows/Tests/badge.svg)](https://github.com/dynatrace-oss/OneAgent-SDK-Python-AutoInstrumentation/actions)
  [![Downloads](https://pepy.tech/badge/autodynatrace)](https://pepy.tech/project/autodynatrace)
 
