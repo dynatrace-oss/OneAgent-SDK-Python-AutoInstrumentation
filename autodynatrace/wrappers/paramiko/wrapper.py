@@ -7,7 +7,10 @@ from ...sdk import sdk
 def instrument():
     @wrapt.patch_function_wrapper("paramiko.client", "SSHClient.connect")
     def paramiko_connect(wrapped, instance, args, kwargs):
-        host = args[0]
+        try:
+            host = args[0]
+        except IndexError:
+            host = kwargs.get("hostname","")
         port = kwargs.get("port", 22)
         url = "ssh://{}:{}".format(host, port)
 
