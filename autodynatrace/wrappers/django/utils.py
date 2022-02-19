@@ -13,7 +13,7 @@ except ImportError:
 def get_host(request):
     host = None
     try:
-        host = str(request.get_host())  # this will include host:port
+        host = request.get_host()
     except Exception:
         logger.debug("Failed to get Django request host", exc_info=True)
 
@@ -30,16 +30,14 @@ def get_host(request):
             logger.debug("Failed to build Django request host", exc_info=True)
             host = "unknown"
 
-    return host
+    return str(host)
 
 
 def get_request_uri(request):
 
     host = get_host(request)
-    scheme = request.scheme or ''
-    return parse.urlunparse(
-        parse.ParseResult(scheme=scheme, netloc=host, path=request.path, params="", query="", fragment="")
-    )
+    scheme = request.scheme or ""
+    return parse.urlunparse(parse.ParseResult(scheme=scheme, netloc=host, path=request.path, params="", query="", fragment=""))
 
 
 def get_app_name(request):
