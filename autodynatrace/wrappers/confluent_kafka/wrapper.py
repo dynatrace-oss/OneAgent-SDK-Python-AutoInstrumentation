@@ -40,9 +40,13 @@ def instrument():
     def custom_produce(wrapped, instance, args, kwargs):
 
         servers = getattr(instance, "dt_servers", "unknown-host")
+        topic = args[0] if args else kwargs.get("topic", "unknown-topic")
 
         msi_handle = sdk.create_messaging_system_info(
-            "Kafka", args[0], MessagingDestinationType.TOPIC, Channel(ChannelType.TCP_IP, servers),
+            "Kafka",
+            topic,
+            MessagingDestinationType.TOPIC,
+            Channel(ChannelType.TCP_IP, servers),
         )
 
         with msi_handle:
@@ -61,7 +65,10 @@ def instrument():
             try:
                 servers = getattr(instance, "dt_servers", "unknown-host")
                 msi_handle = sdk.create_messaging_system_info(
-                    "Kafka", message.topic(), MessagingDestinationType.TOPIC, Channel(ChannelType.TCP_IP, servers),
+                    "Kafka",
+                    message.topic(),
+                    MessagingDestinationType.TOPIC,
+                    Channel(ChannelType.TCP_IP, servers),
                 )
                 with msi_handle:
                     tag = None
