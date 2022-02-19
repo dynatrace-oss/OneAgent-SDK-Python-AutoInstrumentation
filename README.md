@@ -26,6 +26,7 @@ For most technologies, just import it in your code.
 ### Technologies supported:
 
 - **aiohttp** (client)
+- **bottle**
 - **celery**
 - **concurrent.futures**
 - **confluent_kafka**
@@ -33,7 +34,7 @@ For most technologies, just import it in your code.
 - **django**
 - **fastapi**
 - **flask**
-- **grpc**
+- **grpc** (client)
 - **paramiko**
 - **pika** (RabbitMQ)
 - **psycopg2**

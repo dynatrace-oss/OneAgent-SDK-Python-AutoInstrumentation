@@ -53,6 +53,7 @@ INSTRUMENT_LIBS = {
     "fastapi": True,
     "starlette": True,
     "aiohttp": True,
+    "bottle": True,
 }
 
 
