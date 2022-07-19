@@ -66,3 +66,7 @@ For Django, add `"autodynatrace.wrappers.django"` to `INSTALLED_APPS`
 * `AUTODYNATRACE_CUSTOM_SERVICE_NAME`: Overwrite the custom service name (used by `@autodynatrace.trace`)
 * `AUTODYNATRACE_CUSTOM_SERVICE_USE_FQN`: Default `False`, set to `True` to use fully qualified names for service and method names in custom traced services
 * `AUTODYNATRACE_INSTRUMENT_<LIB_NAME>`: If set to `False`, Disables the instrumentation for a specific lib, example: `AUTODYNATRACE_INSTRUMENT_CONCURRENT=False`, default is `True`
+
+### Support
+
+For support using this open source project, please open a github issue explaining your issue and providing code examples, environment details
