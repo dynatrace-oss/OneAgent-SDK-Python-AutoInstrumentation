@@ -75,7 +75,7 @@ def instrument():
                     headers = message.headers()
                     if headers is not None:
                         for header in headers:
-                            if header[0].lower() == "dtdTraceTagInfo":
+                            if header[0] == "dtdTraceTagInfo":
                                 tag = header[1]
                     with sdk.trace_incoming_message_process(msi_handle, str_tag=tag):
                         logger.debug("kafka-consumer: Received message with tag {}".format(tag))
