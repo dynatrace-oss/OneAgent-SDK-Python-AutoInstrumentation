@@ -4,9 +4,12 @@ from ...log import logger
 from ...sdk import sdk
 from oneagent.common import MessagingDestinationType
 from oneagent.sdk import Channel, ChannelType
+from threading import Thread, local
 
 import confluent_kafka
 
+threadlocal = local()
+threadlocal.tracer = None
 
 class Producer(confluent_kafka.Producer):
     pass
@@ -54,12 +57,15 @@ def instrument():
                 tag = tracer.outgoing_dynatrace_string_tag
                 logger.debug("kafka-producer Injecting message with header '{}'".format(tag))
                 headers = kwargs.get("headers", {})
-                headers.update({"x-dynatrace": tag})
+                headers.update({"dtdTraceTagInfo": tag})
                 kwargs["headers"] = headers
                 return wrapped(*args, **kwargs)
 
     @wrapt.patch_function_wrapper("autodynatrace.wrappers.confluent_kafka.wrapper", "Consumer.poll")
     def custom_poll(wrapped, instance, args, kwargs):
+        if threadlocal.tracer is not None:
+           threadlocal.tracer.end()
+           threadlocal.tracer = None
         message = wrapped(*args, **kwargs)
         if message is not None:
             try:
@@ -75,11 +81,13 @@ def instrument():
                     headers = message.headers()
                     if headers is not None:
                         for header in headers:
-                            if header[0].lower() == "x-dynatrace":
+                            if header[0] == "dtdTraceTagInfo":
                                 tag = header[1]
-                    with sdk.trace_incoming_message_process(msi_handle, str_tag=tag):
-                        logger.debug("kafka-consumer: Received message with tag {}".format(tag))
-                        return message
+                    tracer = sdk.trace_incoming_message_process(msi_handle, str_tag=tag)
+                    tracer.start()
+                    threadlocal.tracer = tracer
+                    logger.debug("kafka-consumer: Received message with tag {}".format(tag))
+                    return message
             except Exception:
                 logger.debug("Could not trace Consumer.poll", exc_info=True)
                 return message
