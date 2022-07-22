@@ -54,7 +54,7 @@ def instrument():
                 tag = tracer.outgoing_dynatrace_string_tag
                 logger.debug("kafka-producer Injecting message with header '{}'".format(tag))
                 headers = kwargs.get("headers", {})
-                headers.update({"x-dynatrace": tag})
+                headers.update({"dtdTraceTagInfo": tag})
                 kwargs["headers"] = headers
                 return wrapped(*args, **kwargs)
 
@@ -75,7 +75,7 @@ def instrument():
                     headers = message.headers()
                     if headers is not None:
                         for header in headers:
-                            if header[0].lower() == "x-dynatrace":
+                            if header[0].lower() == "dtdTraceTagInfo":
                                 tag = header[1]
                     with sdk.trace_incoming_message_process(msi_handle, str_tag=tag):
                         logger.debug("kafka-consumer: Received message with tag {}".format(tag))
