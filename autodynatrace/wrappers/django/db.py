@@ -19,7 +19,7 @@ def instrument_db():
 
     setattr(connections, ALL_CONNS_ATTR, connections.all)
 
-    def all_connections(self):
+    def all_connections(self, *args, **kwargs):
         conns = getattr(self, ALL_CONNS_ATTR)()
         for conn in conns:
             instrument_conn(conn)
@@ -53,7 +53,7 @@ def instrument_conn(conn):
                 pass
             channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(db_host, db_port))
 
-        db_info = sdk.create_database_info(db_name, db_technology, channel)
+        db_info = sdk.create_database_info(str(db_name), str(db_technology), channel)
         return TracedCursor(conn._dynatrace_cursor(), db_info)
 
     conn.cursor = cursor
