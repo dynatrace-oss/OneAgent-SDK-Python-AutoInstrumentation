@@ -7,6 +7,9 @@
 Dynatrace provides a [powerful SDK](https://github.com/Dynatrace/OneAgent-SDK-for-Python) that can be used to achieve code level visibility and transaction tracing for applications written in multiple languages, including python. This project provides a library called *autodynatrace*, which is a wrapper around the OneAgent SDK for Python and allows you to instrument python applications with minimal code changes.
 
 
+> **Warning**
+> Autodynatrace is opensource and supported via github issues, this is not supported by Dynatrace via support tickets.
+
 ### Usage
 
 `pip install autodynatrace`
