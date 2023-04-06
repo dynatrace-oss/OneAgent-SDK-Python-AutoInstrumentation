@@ -21,7 +21,7 @@ def instrument():
                 channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(host, port))
 
                 db_info = sdk.create_database_info(db_name, self.vendor, channel)
-                tracer = sdk.trace_sql_database_request(db_info, operation)
+                tracer = sdk.trace_sql_database_request(db_info, "{}".format(operation))
                 self._tracer_dict[_get_tracer_dict_key(event)] = tracer
                 tracer.start()
                 logger.debug("Tracing Mongo call: {}({})@{}:{}".format(operation, db_name, host, port))

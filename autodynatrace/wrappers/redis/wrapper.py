@@ -36,7 +36,7 @@ def dynatrace_execute_command(func, instance, args, kwargs):
     db_info = sdk.create_database_info("Cache", "Redis", channel)
 
     query = format_command_args(args)
-    with sdk.trace_sql_database_request(db_info, query):
+    with sdk.trace_sql_database_request(db_info, "{}".format(query)):
         logger.debug("Tracing from Redis: {} {}".format(func.__name__, query))
         return func(*args, **kwargs)
 

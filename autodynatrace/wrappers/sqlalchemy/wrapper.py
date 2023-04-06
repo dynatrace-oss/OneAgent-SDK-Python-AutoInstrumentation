@@ -40,7 +40,7 @@ def instrument():
                 channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(db_host, db_port))
 
             db_info = sdk.create_database_info(db_name, db_technology, channel)
-            tracer = sdk.trace_sql_database_request(db_info, statement)
+            tracer = sdk.trace_sql_database_request(db_info, "{}".format(statement))
             logger.debug("Tracing SQLAlchemy: '{}, {}@{}:{}".format(statement, db_name, db_host, db_port))
             tracer.start()
             context.dynatrace_tracer = tracer

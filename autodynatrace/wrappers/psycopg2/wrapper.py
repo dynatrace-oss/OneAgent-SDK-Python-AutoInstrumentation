@@ -18,7 +18,7 @@ def instrument():
 
         def execute(self, query, vars=None):
             if hasattr(self, "_dynatrace_db_info") and self._dynatrace_db_info is not None:
-                with sdk.trace_sql_database_request(self._dynatrace_db_info, query) as tracer:
+                with sdk.trace_sql_database_request(self._dynatrace_db_info, "{}".format(query)) as tracer:
                     try:
                         logger.debug("Tracing psycopg2 query: '{}'".format(query))
                         return super(DynatraceCursor, self).execute(query, vars)

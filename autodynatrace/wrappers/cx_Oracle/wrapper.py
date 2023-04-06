@@ -52,7 +52,7 @@ def instrument():
                 channel = oneagent.sdk.Channel(oneagent.sdk.ChannelType.TCP_IP, "{}:{}".format(host, port))
 
             db_info = sdk.create_database_info(service_name, oneagent.sdk.DatabaseVendor.ORACLE, channel)
-            with sdk.trace_sql_database_request(db_info, query):
+            with sdk.trace_sql_database_request(db_info, "{}".format(query)):
                 logger.debug(
                     "Tracing cx_Oracle query: '{}', host: '{}', port: '{}', database: '{}'".format(
                         query, host, port, service_name
