@@ -12,7 +12,7 @@ def instrument():
 
         method = args[0]
         url = args[1]
-        headers = dict(kwargs.get("headers", {}))
+        headers = dict(kwargs.get("headers") or {})
 
         with sdk.trace_outgoing_web_request(url, method, headers) as tracer:
             tag = tracer.outgoing_dynatrace_string_tag.decode()
