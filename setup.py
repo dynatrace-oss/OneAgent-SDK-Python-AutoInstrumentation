@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name="autodynatrace",
-    version="1.1.1",
+    version="2.0.0",
     packages=find_packages(),
     package_data={"autodynatrace": ["wrappers/*"]},
     install_requires=["wrapt>=1.11.2", "oneagent-sdk>=1.3.0", "six>=1.10.0", "autowrapt>=1.0"],
     tests_require=["pytest", "mock", "tox", "django"],
     entry_points={"autodynatrace": ["string = autodynatrace:load"]},
-    python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*",
+    python_requires=">=3.6",
     author="David Lopes",
     author_email="david.lopes@dynatrace.com",
     description="Auto instrumentation for the OneAgent SDK",

@@ -8,7 +8,7 @@ from ..utils import normalize_vendor
 class TracedCursor(wrapt.ObjectProxy):
     def __init__(self, cursor, db_info):
         super(TracedCursor, self).__init__(cursor)
-        self.db_info = db_info
+        self.db_info = f"{db_info}"
         self._self_last_execute_operation = None
         self._original_cursor = cursor
 
@@ -21,7 +21,12 @@ class TracedCursor(wrapt.ObjectProxy):
             except Exception:
                 pass
         logger.debug("Tracing Database Call '{}' to {}".format(str(query), self.db_info))
-        with sdk.trace_sql_database_request(self.db_info, query):
+
+        try:
+            with sdk.trace_sql_database_request(self.db_info, f"{query}"):
+                return method(*args, **kwargs)
+        except Exception as e:
+            logger.warning(f"Error instrumenting database: {e}")
             return method(*args, **kwargs)
 
     def executemany(self, query, *args, **kwargs):
