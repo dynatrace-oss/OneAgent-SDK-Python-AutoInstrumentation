@@ -8,7 +8,7 @@ from ..utils import normalize_vendor
 class TracedCursor(wrapt.ObjectProxy):
     def __init__(self, cursor, db_info):
         super(TracedCursor, self).__init__(cursor)
-        self.db_info = f"{db_info}"
+        self.db_info = db_info
         self._self_last_execute_operation = None
         self._original_cursor = cursor
 

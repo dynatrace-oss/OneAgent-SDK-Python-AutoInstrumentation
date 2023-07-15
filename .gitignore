@@ -5,3 +5,4 @@ __pycache__
 *.pyc
 .tox/
 autodynatrace.egg-info/
+.idea
