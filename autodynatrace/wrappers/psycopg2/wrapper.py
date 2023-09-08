@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.extras
 import wrapt
 import oneagent
 import functools
@@ -11,7 +12,7 @@ def instrument():
     def parse_dsn(dsn):
         return {c.split("=")[0]: c.split("=")[1] for c in dsn.split() if "=" in c}
 
-    class DynatraceCursor(psycopg2.extra.DictCursorBase):
+    class DynatraceCursor(psycopg2.extras.DictCursorBase):
         def __init__(self, *args, **kwargs):
             self._dynatrace_db_info = kwargs.pop("dynatrace_db_info", None)
             super(DynatraceCursor, self).__init__(*args, **kwargs)
