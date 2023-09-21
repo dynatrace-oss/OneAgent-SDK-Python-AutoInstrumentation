@@ -1,7 +1,6 @@
 from abc import ABC
 
 import psycopg2
-import psycopg2.extras
 import wrapt
 import oneagent
 
