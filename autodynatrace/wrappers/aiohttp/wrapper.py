@@ -11,7 +11,7 @@ def instrument():
     async def dynatrace_request(wrapped, instance, args, kwargs):
 
         method = args[0]
-        url = args[1]
+        url = str(args[1])
         headers = dict(kwargs.get("headers", {}))
 
         with sdk.trace_outgoing_web_request(url, method, headers) as tracer:
