@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 about = {}
 here = Path(__file__).parent
-with open(here / "autodynatrace" / "__version__", "r") as f:
+with open(here / "autodynatrace" / "__about__", "r") as f:
     exec(f.read(), about)
 
 setup(
