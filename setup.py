@@ -1,8 +1,14 @@
+from pathlib import Path
 from setuptools import setup, find_packages
+
+about = {}
+here = Path(__file__).parent
+with open(here / "autodynatrace" / "__version__", "r") as f:
+    exec(f.read(), about)
 
 setup(
     name="autodynatrace",
-    version="2.0.1",
+    version=about["__version__"],
     packages=find_packages(),
     package_data={"autodynatrace": ["wrappers/*"]},
     install_requires=["wrapt>=1.11.2", "oneagent-sdk>=1.3.0", "six>=1.10.0", "autowrapt>=1.0"],
