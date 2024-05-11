@@ -7,7 +7,7 @@ name = "autodynatrace"
 dynamic = ["version"]
 description = "Auto instrumentation for the OneAgent SDK"
 readme = "README.md"
-license = "LICENSE"
+license = "Apache-2.0"
 requires-python = ">=3.6"
 authors = [
     { name = "David Lopes", email = "david.lopes@dynatrace.com" },
