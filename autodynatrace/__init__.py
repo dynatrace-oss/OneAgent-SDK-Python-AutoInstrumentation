@@ -53,6 +53,7 @@ INSTRUMENT_LIBS = {
     "starlette": True,
     "aiohttp": True,
     "bottle": True,
+    "asyncio": True,
 }
 
 
