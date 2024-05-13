@@ -27,6 +27,7 @@ For most technologies, just import it in your code.
 ### Technologies supported:
 
 - **aiohttp** (client)
+- **asyncio** - Run with the environment variable `AUTODYNATRACE_INSTRUMENT_CONCURRENT=True`
 - **bottle**
 - **celery**
 - **concurrent.futures**
