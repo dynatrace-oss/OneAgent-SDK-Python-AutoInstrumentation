@@ -23,7 +23,16 @@ class DynatraceASGIMiddleware:
 
         dt_tag = headers.get("x-dynatrace")
 
-        host = "{}:{}".format(scope["server"][0], scope["server"][1])
+        host = ""
+        # scope["server"] is optional, if missing, it defaults to None.
+        # https://asgi.readthedocs.io/en/latest/specs/www.html
+        if scope.get("server") and scope["server"][1]:
+            # [host, port]
+            host = "{}:{}".format(scope["server"][0], scope["server"][1])
+        elif scope.get("server"):
+            # [path, None]
+            host = "{}".format(scope["server"][0])
+
         url = "{}://{}{}?{}".format(scope["scheme"], host, scope["path"], scope["query_string"].decode())
         method = scope.get("method", "GET")
         app = scope.get("app")
