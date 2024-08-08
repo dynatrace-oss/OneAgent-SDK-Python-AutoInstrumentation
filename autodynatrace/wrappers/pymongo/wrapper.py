@@ -14,7 +14,7 @@ def instrument():
         def started(self, event):
 
             try:
-                db_name = event.database_name
+                #db_name = event.database_name
                 collection_name = event.command.get(event.command_name)
                 operation = "{} at {}".format(event.command_name, collection_name)
                 host, port = event.connection_id
@@ -24,8 +24,6 @@ def instrument():
                 tracer = sdk.trace_sql_database_request(db_info, "{}".format(operation))
                 self._tracer_dict[_get_tracer_dict_key(event)] = tracer
                 tracer.start()
-                logger.debug("Tracing Mongo call: {}({})@{}:{}".format(operation, db_name, host, port))
-
             except Exception as e:
                 logger.debug("Error instrumenting MongoDB: {}".format(e))
 
