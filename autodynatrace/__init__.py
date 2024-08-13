@@ -38,6 +38,7 @@ INSTRUMENT_LIBS = {
     "redis": True,
     "pika": True,
     "cx_Oracle": True,
+    "oracledb": True,
     "grpc": True,
     "ruxit": True,
     "confluent_kafka": True,
