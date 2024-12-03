@@ -24,7 +24,7 @@ def instrument():
                 tracer = sdk.trace_sql_database_request(db_info, "{}".format(operation))
                 self._tracer_dict[_get_tracer_dict_key(event)] = tracer
                 tracer.start()
-                logger.debug("Tracing Mongo call: {}({})@{}:{}".format(operation, db_name, host, port))
+                #logger.debug("Tracing Mongo call: {}@{}:{}".format(operation, db_name, host, port))
 
             except Exception as e:
                 logger.debug("Error instrumenting MongoDB: {}".format(e))
@@ -42,7 +42,7 @@ def instrument():
                     logger.debug("Got bad pymongo event: {}".format(event))
                     tracer.mark_failed("MongoDB Command", message)
 
-                logger.debug("Ending Mongo call: {}({})@{}:{}".format(event.command_name, event.database_name, event.connection_id[0], event.connection_id[1]))
+                #logger.debug("Ending Mongo call: {}({})@{}:{}".format(event.command_name, event.database_name, event.connection_id[0], event.connection_id[1]))
                 tracer.end()
                 self._tracer_dict.pop(_get_tracer_dict_key(event))
 

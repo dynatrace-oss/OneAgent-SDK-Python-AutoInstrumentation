@@ -12,13 +12,27 @@ def instrument():
         method, path = args[:2]
         scheme = "https" if "HTTPS" in instance.__class__.__name__ else "http"
         url = "{}://{}{}{}".format(
-            scheme, instance.host, ":{}".format(instance.port) if str(instance.port) not in ["80", "443"] else "", path
+            scheme,
+            instance.host,
+            ":{}".format(instance.port)
+            if str(instance.port) not in ["80", "443"]
+            else "",
+            path,
         )
         tracer = sdk.trace_outgoing_web_request(url, method)
         tracer.start()
         setattr(instance, "__dynatrace_tracer", tracer)
         ret = wrapped(*args, **kwargs)
-        tag = tracer.outgoing_dynatrace_string_tag
+        tag = tracer.outgoing_dynatrace_string_tag  # outgoing_dynatrace_byte_tag
+
+        byte_tag = tracer.outgoing_dynatrace_byte_tag
+        decoded_tag = tracer.outgoing_dynatrace_string_tag.decode("utf-8")
+
+        logger.debug("Tracing urllib, url: '{}', Byte tag: '{}'".format(url, byte_tag))
+        logger.debug(
+            "Tracing urllib, url: '{}', Decoded tag: '{}'".format(url, decoded_tag)
+        )
+
         logger.debug("Tracing urllib, url: '{}', tag: '{}'".format(url, tag))
         instance.putheader("x-dynatrace", tag)
         return ret
@@ -35,7 +49,15 @@ def instrument():
 
         return response
 
-    setattr(httplib.HTTPConnection, "putrequest", wrapt.FunctionWrapper(httplib.HTTPConnection.putrequest, dynatrace_putrequest))
     setattr(
-        httplib.HTTPConnection, "getresponse", wrapt.FunctionWrapper(httplib.HTTPConnection.getresponse, dynatrace_getresponse)
+        httplib.HTTPConnection,
+        "putrequest",
+        wrapt.FunctionWrapper(httplib.HTTPConnection.putrequest, dynatrace_putrequest),
+    )
+    setattr(
+        httplib.HTTPConnection,
+        "getresponse",
+        wrapt.FunctionWrapper(
+            httplib.HTTPConnection.getresponse, dynatrace_getresponse
+        ),
     )
