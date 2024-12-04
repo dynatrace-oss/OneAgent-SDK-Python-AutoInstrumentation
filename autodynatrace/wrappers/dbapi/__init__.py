@@ -5,6 +5,17 @@ from ...sdk import sdk
 from ..utils import normalize_vendor
 
 
+class TracedMethodException(Exception):
+    """
+    Custom exception used to indicate an error occurred within a traced method.
+
+    This exception is used to wrap and re-raise exceptions that occur during the execution
+    of a method wrapped by the `_trace_method` function in the `TracedCursor` class. It helps
+    to maintain the context of the original exception while providing a clear indication that
+    the error occurred within a traced method and not in the SDK.
+    """
+
+
 class TracedCursor(wrapt.ObjectProxy):
     def __init__(self, cursor, db_info):
         super(TracedCursor, self).__init__(cursor)
@@ -24,8 +35,16 @@ class TracedCursor(wrapt.ObjectProxy):
 
         try:
             with sdk.trace_sql_database_request(self.db_info, f"{query}"):
-                return method(*args, **kwargs)
+                try:
+                    return method(*args, **kwargs)
+                except Exception as e:
+                    # If an exception occurs in the `method``,
+                    # raise the original exception from TracedMethodException.
+                    raise e from TracedMethodException
         except Exception as e:
+            if isinstance(e.__cause__, TracedMethodException):
+                # Re-raise the exception if it was caused by TracedMethodException
+                raise
             logger.warning(f"Error instrumenting database: {e}")
             return method(*args, **kwargs)
 
