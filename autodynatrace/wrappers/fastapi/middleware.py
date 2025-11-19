@@ -16,8 +16,8 @@ class DynatraceASGIMiddleware:
         request_headers = scope.get("headers", [])
         headers = {}
         for key, value in request_headers:
-            key = key.decode() if isinstance(key, bytes) else key
-            value = value.decode() if isinstance(value, bytes) else value
+            key = key.decode('utf-8', errors='replace') if isinstance(key, bytes) else key
+            value = value.decode('utf-8', errors='replace') if isinstance(value, bytes) else value
             headers[key.lower()] = value
 
         dt_tag = headers.get("x-dynatrace")
@@ -55,8 +55,8 @@ class DynatraceASGIMiddleware:
                     if "headers" in message:
                         response_headers = {}
                         for k, v in message["headers"]:
-                            k = k.decode() if isinstance(k, bytes) else k
-                            v = v.decode() if isinstance(v, bytes) else v
+                            k = k.decode('utf-8', errors='replace') if isinstance(k, bytes) else k
+                            v = v.decode('utf-8', errors='replace') if isinstance(v, bytes) else v
                             response_headers[k.lower()] = v
 
                         tracer.add_response_headers(response_headers)
