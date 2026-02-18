@@ -19,7 +19,11 @@ def instrument():
         return wrapped(*args, **kwargs)
 
     async def trace_coro(coro: Coroutine):
-        name = coro.__qualname__
+        name = (
+            getattr(coro, "__qualname__", None) or
+            getattr(coro, "__name__", None) or
+            type(coro).__name__
+        )
         with sdk.trace_custom_service(name, "asyncio") as tracer:
             try:
                 logger.debug(f"tracing asyncio.tasks.ensure_future: {name}")
