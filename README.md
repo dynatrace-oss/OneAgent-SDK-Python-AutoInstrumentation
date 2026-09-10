@@ -1,5 +1,8 @@
-## autodynatrace - OneAgent-SDK-Python-AutoInstrumentation
+> ⚠️ **Archived**
+>
+> This project is no longer actively maintained. The repository remains available for reference, but no additional features, fixes, or support should be expected.
 
+## autodynatrace - OneAgent-SDK-Python-AutoInstrumentation
 
 [![Actions Status](https://github.com/dynatrace-oss/OneAgent-SDK-Python-AutoInstrumentation/workflows/Tests/badge.svg)](https://github.com/dynatrace-oss/OneAgent-SDK-Python-AutoInstrumentation/actions)
  [![Downloads](https://pepy.tech/badge/autodynatrace)](https://pepy.tech/project/autodynatrace)
